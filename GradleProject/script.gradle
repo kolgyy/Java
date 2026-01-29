@@ -1,0 +1,50 @@
+task hello(description: "Hello, World!", group: "moro") {
+    println "Gradle: ${gradle.hashCode()}, project: ${project.hashCode()}, root: ${rootProject.hashCode()}"
+
+    doLast {
+        println "doLast1"
+    }
+
+    doFirst {
+        println "doFirst1"
+    }
+
+    doLast {
+        println "doLast2"
+    }
+    doFirst {
+        println "doFirst2"
+    }
+
+    println "description: ${description}, group: ${group}, actions = ${actions.size()}"
+}
+task task1 {
+    doLast {
+        println "task 1"
+    }
+}
+task task2 {
+    doLast {
+        println "task 2"
+    }
+}
+task task3 {
+    doLast {
+        println "task 3"
+    }
+}
+task task4 {
+    doLast {
+        println "task 4"
+    }
+}
+task2.dependsOn(task3)
+task3.dependsOn(task4)
+
+task4.finalizedBy task1
+
+gradle.taskGraph.whenReady {
+    TaskExecutionGraph graph ->
+        println "Graph: "
+        graph.allTasks.each(it -> println "${it.name}")
+}

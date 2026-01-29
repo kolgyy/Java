@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.moro'
+version = '1.0-SNAPSHOT'
+
+ext {
+    javaVersion = 17
+    currentDate = LocalDate.now()
+}
+println ext.javaVersion
+println ext.currentDate
+
+apply from: 'script.gradle'
+apply plugin: CustomPlugin
+
+repositories {
+//    maven {
+//        name "nexus"
+//        uri "https://nexus.javaguru/repository"
+//    }
+    mavenCentral()
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation('org.springframework:spring-webmvc:6.0.10') {
+//        exclude(group: 'org.springframework', module: 'spring-aop')
+    }
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+wrapper {
+    gradleVersion("8.2")
+}
+
+class CustomPlugin implements Plugin<Project> {
+    @Override
+    void apply(Project target) {
+        println "Custom plugin"
+    }
+}
