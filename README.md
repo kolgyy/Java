@@ -29,6 +29,8 @@ Spring, Hibernate, Kafka, Docker и сопутствующих технолог�
 - Java
 - Spring Boot / Spring MVC / Spring Security
 - Hibernate / JPA
+- PostgreSQL
+- H2
 - REST API
 - Kafka
 - Maven / Gradle
