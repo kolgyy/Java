@@ -23,6 +23,7 @@ Spring, Hibernate, Kafka, Docker и сопутствующих технолог�
 - **SpringWebApp** — базовое веб-приложение на Spring
 - **TransferAPI_KafkaTransactions** — транзакции и обмен сообщениями через Kafka
 - **docker-project** — Spring Boot приложение, запускаемое в Docker
+- **KubernetesPriject** — Проект с манифестами для запуска в Kubernetes
 
 ## Technologies Used
 
@@ -30,6 +31,7 @@ Spring, Hibernate, Kafka, Docker и сопутствующих технолог�
 - Spring Boot / Spring MVC / Spring Security
 - Hibernate / JPA
 - PostgreSQL
+- JDBC
 - H2
 - REST API
 - Kafka
