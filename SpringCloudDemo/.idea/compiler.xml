@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.6" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiGateway" options="-parameters" />
+      <module name="ApiGateway.main" options="-parameters" />
+      <module name="ApiGateway.test" options="-parameters" />
+      <module name="EurekaClient" options="-parameters" />
+      <module name="EurekaClient.main" options="-parameters" />
+      <module name="EurekaClient.test" options="-parameters" />
+      <module name="EurekaClientTwo" options="-parameters" />
+      <module name="EurekaClientTwo.main" options="-parameters" />
+      <module name="EurekaClientTwo.test" options="-parameters" />
+      <module name="EurekaServer" options="-parameters" />
+      <module name="EurekaServer.main" options="-parameters" />
+      <module name="EurekaServer.test" options="-parameters" />
+    </option>
+  </component>
+</project>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="94df27ce-57a6-4a8e-8da6-d962ec4ae0d2" name="Changes" comment="Added Eureka Client">
+      <change afterPath="$PROJECT_DIR$/EurekaClientTwo/src/main/java/com/moro/eurekaclienttwo/controller/NewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EurekaClient/src/main/java/com/moro/eurekaclient/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/EurekaClient/src/main/java/com/moro/eurekaclient/controller/TestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EurekaClient/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/EurekaClient/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/ApiGateway">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/EurekaClient">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/EurekaClientTwo">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/EurekaServer">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="39RbGo45E8FXpxrULokeKduVOdP" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build EurekaClient.executor": "Run",
+    "Gradle.Build EurekaClientTwo.executor": "Run",
+    "Gradle.Build EurekaServer.executor": "Run",
+    "Gradle.Build SpringMicroDemo.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
+    "Spring Boot.EurekaClientApplication-inst1.executor": "Run",
+    "Spring Boot.EurekaClientApplication-inst2.executor": "Run",
+    "Spring Boot.EurekaClientApplication-inst3.executor": "Run",
+    "Spring Boot.EurekaClientApplication.executor": "Run",
+    "Spring Boot.EurekaClientTwoApplication.executor": "Run",
+    "Spring Boot.EurekaServerApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "http.proxy",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.EurekaClientApplication-inst3">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="SpringCloudDemo" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="SpringCloudDemo" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="ApiGateway.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaClientApplication-inst1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="EurekaClient.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.eurekaclient.EurekaClientApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaClientApplication-inst2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="EurekaClient.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.eurekaclient.EurekaClientApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaClientApplication-inst3" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="EurekaClient.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.eurekaclient.EurekaClientApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaClientTwoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="EurekaClientTwo.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.eurekaclienttwo.EurekaClientTwoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="EurekaServer.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.moro.eurekaserver.EurekaServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Spring Boot.ApiGatewayApplication" />
+      <item itemvalue="Spring Boot.EurekaClientApplication-inst1" />
+      <item itemvalue="Spring Boot.EurekaClientApplication-inst2" />
+      <item itemvalue="Spring Boot.EurekaClientApplication-inst3" />
+      <item itemvalue="Spring Boot.EurekaClientTwoApplication" />
+      <item itemvalue="Spring Boot.EurekaServerApplication" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="94df27ce-57a6-4a8e-8da6-d962ec4ae0d2" name="Changes" comment="" />
+      <created>1770661771199</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770661771199</updated>
+      <workItem from="1770661773801" duration="15309000" />
+    </task>
+    <task id="LOCAL-00001" summary="Empty project">
+      <option name="closed" value="true" />
+      <created>1770662475307</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770662475307</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Empty project">
+      <option name="closed" value="true" />
+      <created>1770717979160</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770717979160</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added Eureka Client">
+      <option name="closed" value="true" />
+      <created>1770728440090</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770728440090</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Empty project" />
+    <MESSAGE value="Added Eureka Client" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Eureka Client" />
+  </component>
+</project>
