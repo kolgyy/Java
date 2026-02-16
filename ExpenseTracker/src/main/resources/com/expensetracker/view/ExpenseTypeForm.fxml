@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.expensetracker.controller.ExpenseTypeFormController"
+      maxWidth="400">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Вид расходов" style="-fx-font-size: 18px;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Название:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="nameField" promptText="Введите название" prefWidth="250"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Описание:" alignment="TOP_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextArea fx:id="descriptionField" promptText="Введите описание" prefRowCount="3" prefWidth="250"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Месячный лимит:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="limitField" promptText="Введите лимит" prefWidth="250"
+                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Сохранить" onAction="#handleSave" prefWidth="120"/>
+        <Button text="Отмена" onAction="#handleCancel" prefWidth="120"/>
+    </HBox>
+</VBox>

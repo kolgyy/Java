@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.expensetracker.controller.PurchaseFormController"
+      maxWidth="400">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Покупка (расход)" style="-fx-font-size: 18px;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Сотрудник:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="employeeComboBox" promptText="Выберите сотрудника" prefWidth="250"
+                  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Вид расходов:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="expenseTypeComboBox" promptText="Выберите вид" prefWidth="250"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Дата покупки:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="purchaseDatePicker" prefWidth="250"
+                    GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Сумма:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="amountField" promptText="Введите сумму" prefWidth="250"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Номер чека:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="receiptNumberField" promptText="Введите номер чека" prefWidth="250"
+                   GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Сохранить" onAction="#handleSave" prefWidth="120"/>
+        <Button text="Отмена" onAction="#handleCancel" prefWidth="120"/>
+    </HBox>
+</VBox>

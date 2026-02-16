@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.expensetracker.controller.MainController">
+
+    <top>
+        <Label text="Expense Tracker" style="-fx-font-size: 20px; -fx-padding: 10;"/>
+    </top>
+
+    <center>
+        <TabPane fx:id="tabPane">
+
+            <Tab text="Departments" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <TableView fx:id="departmentTable"/>
+                    <HBox spacing="10">
+                        <Button text="Add" onAction="#handleAddDepartment"/>
+                        <Button text="Edit" onAction="#handleEditDepartment"/>
+                        <Button text="Delete" onAction="#handleDeleteDepartment"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="Employees" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <TableView fx:id="employeeTable">
+                        <columns>
+                            <TableColumn fx:id="employeeNameColumn" text="Full Name"/>
+                            <TableColumn fx:id="employeeDepartmentColumn" text="Department"/>
+                        </columns>
+                    </TableView>
+                    <HBox spacing="10">
+                        <Button text="Add"    onAction="#handleAddEmployee"/>
+                        <Button text="Edit"   onAction="#handleEditEmployee"/>
+                        <Button text="Delete" onAction="#handleDeleteEmployee"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="Expense Types" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <TableView fx:id="expenseTypeTable">
+                        <columns>
+                            <TableColumn fx:id="colExpenseTypeName" text="Name"/>
+                            <TableColumn fx:id="colExpenseTypeDescription" text="Description"/>
+                            <TableColumn fx:id="colExpenseTypeLimit" text="Monthly Limit"/>
+                        </columns>
+                    </TableView>
+                    <HBox spacing="10">
+                        <Button text="Add"    onAction="#handleAddExpenseType"/>
+                        <Button text="Edit"   onAction="#handleEditExpenseType"/>
+                        <Button text="Delete" onAction="#handleDeleteExpenseType"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="Purchases" closable="false">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <TableView fx:id="purchaseTable">
+                        <columns>
+                            <TableColumn fx:id="colPurchaseEmployee" text="Employee"/>
+                            <TableColumn fx:id="colPurchaseExpenseType" text="Expense Type"/>
+                            <TableColumn fx:id="colPurchaseDate" text="Date"/>
+                            <TableColumn fx:id="colPurchaseAmount" text="Amount"/>
+                            <TableColumn fx:id="colPurchaseReceipt" text="Receipt Number"/>
+                        </columns>
+                    </TableView>
+                    <HBox spacing="10">
+                        <Button text="Add"    onAction="#handleAddPurchase"/>
+                        <Button text="Edit"   onAction="#handleEditPurchase"/>
+                        <Button text="Delete" onAction="#handleDeletePurchase"/>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>
