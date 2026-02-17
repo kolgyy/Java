@@ -24,6 +24,7 @@ Spring, Hibernate, Kafka, Docker и сопутствующих технолог�
 - **TransferAPI_KafkaTransactions** — транзакции и обмен сообщениями через Kafka
 - **docker-project** — Spring Boot приложение, запускаемое в Docker
 - **KubernetesProject** — Проект с манифестами для запуска в Kubernetes
+- **ExpenseTracker** - Графическое приложение учёта финансовых расходов отделов в компании
 
 ## Technologies Used
 
