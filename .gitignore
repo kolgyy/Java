@@ -3,6 +3,9 @@
 *.war
 *.ear
 
+### Environment files ###
+.env
+
 ### Maven ###
 target/
 pom.xml.tag
