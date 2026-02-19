@@ -6,5 +6,5 @@ public interface Command {
 
     String description();
 
-    String execute(Long chadId, String[] args);
+    String execute(Long chatId, String[] args);
 }
