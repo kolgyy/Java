@@ -13,7 +13,7 @@ public class InMemoryUserRepository implements UserRepository {
     private final Map<Long, User> storage = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<User> findByChadId(Long chatId) {
+    public Optional<User> findByChatId(Long chatId) {
         return Optional.ofNullable(storage.get(chatId));
     }
 

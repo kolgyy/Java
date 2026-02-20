@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<User> findByChadId(Long chatId);
+    Optional<User> findByChatId(Long chatId);
 
     User save(User user);
 
