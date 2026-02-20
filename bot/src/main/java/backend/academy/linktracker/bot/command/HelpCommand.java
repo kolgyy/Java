@@ -1,8 +1,8 @@
 package backend.academy.linktracker.bot.command;
 
-import org.springframework.stereotype.Component;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -26,9 +26,9 @@ public class HelpCommand implements UserCommand {
 
         for (Command command : commands) {
             sb.append(command.name())
-                .append(" - ")
-                .append(command.description())
-                .append("\n");
+                    .append(" - ")
+                    .append(command.description())
+                    .append("\n");
         }
 
         return sb.toString();

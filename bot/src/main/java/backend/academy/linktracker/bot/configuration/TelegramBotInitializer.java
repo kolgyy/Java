@@ -5,10 +5,10 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,8 +31,8 @@ public class TelegramBotInitializer {
     @Bean
     public void setupTelegramCommands() {
         List<BotCommand> botCommands = commandService.getCommandRegistry().getCommands().stream()
-            .map(cmd -> new BotCommand(cmd.name(), cmd.description()))
-            .toList();
+                .map(cmd -> new BotCommand(cmd.name(), cmd.description()))
+                .toList();
 
         telegramBot.execute(new SetMyCommands(botCommands.toArray(new BotCommand[0])));
     }

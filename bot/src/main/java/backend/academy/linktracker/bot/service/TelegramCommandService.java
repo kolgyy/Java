@@ -26,7 +26,6 @@ public class TelegramCommandService {
         String response = command.execute(chatId, parts);
 
         telegramBot.execute(new SendMessage(chatId.toString(), response));
-
     }
 
     public CommandRegistry getCommandRegistry() {

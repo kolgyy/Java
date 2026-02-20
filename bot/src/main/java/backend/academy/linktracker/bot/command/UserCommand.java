@@ -1,4 +1,3 @@
 package backend.academy.linktracker.bot.command;
 
-public interface UserCommand extends Command {
-}
+public interface UserCommand extends Command {}

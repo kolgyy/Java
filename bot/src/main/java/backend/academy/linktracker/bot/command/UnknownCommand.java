@@ -1,4 +1,5 @@
 package backend.academy.linktracker.bot.command;
+
 import org.springframework.stereotype.Component;
 
 @Component

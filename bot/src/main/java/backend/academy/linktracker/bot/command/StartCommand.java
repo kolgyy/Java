@@ -14,6 +14,7 @@ public class StartCommand implements UserCommand {
     public String name() {
         return "/start";
     }
+
     @Override
     public String description() {
         return "Начало работы";
@@ -26,5 +27,4 @@ public class StartCommand implements UserCommand {
         }
         return "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.";
     }
-
 }
