@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StartCommand implements Command {
+public class StartCommand implements UserCommand {
 
     private final UserService userService;
 
