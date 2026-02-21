@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CommandRegistry {
 
@@ -17,10 +19,21 @@ public class CommandRegistry {
 
         this.commands =
                 commandList.stream().collect(Collectors.toUnmodifiableMap(UserCommand::name, command -> command));
+
+        log.atInfo()
+            .addKeyValue("registerCommands", commands.keySet())
+            .log("CommandRegistry initialized with commands");
     }
 
     public Command getCommand(String name) {
-        return commands.getOrDefault(name, unknownCommand);
+        Command command = commands.getOrDefault(name, unknownCommand);
+
+        log.atDebug()
+            .addKeyValue("requestedCommand", name)
+            .addKeyValue("resolvedCommand", command.getClass().getSimpleName())
+            .log("Command request processed");
+
+        return command;
     }
 
     public Collection<Command> getCommands() {

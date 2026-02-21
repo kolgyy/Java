@@ -2,8 +2,10 @@ package backend.academy.linktracker.bot.command;
 
 import backend.academy.linktracker.bot.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class StartCommand implements UserCommand {
@@ -22,6 +24,12 @@ public class StartCommand implements UserCommand {
 
     @Override
     public String execute(Long chatId, String[] args) {
+
+        log.atInfo()
+            .addKeyValue("chatId", chatId)
+            .addKeyValue("command", name())
+            .log("Executing start command");
+
         if (!userService.isRegistered(chatId)) {
             userService.register(chatId);
         }

@@ -7,9 +7,11 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class TelegramBotInitializer {
@@ -25,6 +27,10 @@ public class TelegramBotInitializer {
         };
 
         telegramBot.setUpdatesListener(listener);
+
+        log.atInfo()
+            .log("Telegram bot listener initialized");
+
         return listener;
     }
 
@@ -35,5 +41,10 @@ public class TelegramBotInitializer {
                 .toList();
 
         telegramBot.execute(new SetMyCommands(botCommands.toArray(new BotCommand[0])));
+
+        log.atInfo()
+            .addKeyValue("commands", botCommands.stream().map(BotCommand::command).toList())
+            .log("Telegram bot commands set");
+
     }
 }
