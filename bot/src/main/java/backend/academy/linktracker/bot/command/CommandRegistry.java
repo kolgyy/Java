@@ -21,17 +21,17 @@ public class CommandRegistry {
                 commandList.stream().collect(Collectors.toUnmodifiableMap(UserCommand::name, command -> command));
 
         log.atInfo()
-            .addKeyValue("registerCommands", commands.keySet())
-            .log("CommandRegistry initialized with commands");
+                .addKeyValue("registerCommands", commands.keySet())
+                .log("CommandRegistry initialized with commands");
     }
 
     public Command getCommand(String name) {
         Command command = commands.getOrDefault(name, unknownCommand);
 
         log.atDebug()
-            .addKeyValue("requestedCommand", name)
-            .addKeyValue("resolvedCommand", command.getClass().getSimpleName())
-            .log("Command request processed");
+                .addKeyValue("requestedCommand", name)
+                .addKeyValue("resolvedCommand", command.getClass().getSimpleName())
+                .log("Command request processed");
 
         return command;
     }

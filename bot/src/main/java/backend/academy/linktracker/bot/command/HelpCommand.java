@@ -26,9 +26,9 @@ public class HelpCommand implements UserCommand {
     public String execute(Long chatId, String[] args) {
 
         log.atInfo()
-            .addKeyValue("chatId", chatId)
-            .addKeyValue("command", name())
-            .log("Executing help command");
+                .addKeyValue("chatId", chatId)
+                .addKeyValue("command", name())
+                .log("Executing help command");
 
         StringBuilder sb = new StringBuilder("Доступные команды:\n");
 

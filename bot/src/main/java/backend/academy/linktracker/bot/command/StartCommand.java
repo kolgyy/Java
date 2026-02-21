@@ -26,9 +26,9 @@ public class StartCommand implements UserCommand {
     public String execute(Long chatId, String[] args) {
 
         log.atInfo()
-            .addKeyValue("chatId", chatId)
-            .addKeyValue("command", name())
-            .log("Executing start command");
+                .addKeyValue("chatId", chatId)
+                .addKeyValue("command", name())
+                .log("Executing start command");
 
         if (!userService.isRegistered(chatId)) {
             userService.register(chatId);

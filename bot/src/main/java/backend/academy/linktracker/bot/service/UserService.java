@@ -21,10 +21,7 @@ public class UserService {
         if (!userRepository.existsByChatId(chatId)) {
             userRepository.save(new User(chatId, true));
 
-            log.atInfo()
-                .addKeyValue("chatId", chatId)
-                .log("New user registered");
-
+            log.atInfo().addKeyValue("chatId", chatId).log("New user registered");
         }
     }
 }

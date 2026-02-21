@@ -29,14 +29,8 @@ class TelegramCommandServiceTest {
         telegramBot = mock(TelegramBot.class);
 
         commandRegistry = new CommandRegistry(
-            List.of(
-                new StartCommand(
-                    new UserService(mock(UserRepository.class))
-                ),
-                new HelpCommand(List.of())
-            ),
-            new UnknownCommand()
-        );
+                List.of(new StartCommand(new UserService(mock(UserRepository.class))), new HelpCommand(List.of())),
+                new UnknownCommand());
 
         service = new TelegramCommandService(commandRegistry, telegramBot);
     }
@@ -68,8 +62,8 @@ class TelegramCommandServiceTest {
         String chatIdSent = (String) sent.getParameters().get("chat_id");
 
         assertThat(text)
-            .isNotNull()
-            .isEqualTo("Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
+                .isNotNull()
+                .isEqualTo("Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
 
         assertThat(chatIdSent).isEqualTo(chatId.toString());
     }
@@ -100,9 +94,7 @@ class TelegramCommandServiceTest {
         String text = (String) sent.getParameters().get("text");
         String chatIdSent = (String) sent.getParameters().get("chat_id");
 
-        assertThat(text)
-            .isNotNull()
-            .contains("Доступные команды");
+        assertThat(text).isNotNull().contains("Доступные команды");
 
         assertThat(chatIdSent).isEqualTo(chatId.toString());
     }
@@ -133,9 +125,7 @@ class TelegramCommandServiceTest {
         String text = (String) sent.getParameters().get("text");
         String chatIdSent = (String) sent.getParameters().get("chat_id");
 
-        assertThat(text)
-            .isNotNull()
-            .isEqualTo("Неизвестная команда. Воспользуйтесь /help.");
+        assertThat(text).isNotNull().isEqualTo("Неизвестная команда. Воспользуйтесь /help.");
 
         assertThat(chatIdSent).isEqualTo(chatId.toString());
     }

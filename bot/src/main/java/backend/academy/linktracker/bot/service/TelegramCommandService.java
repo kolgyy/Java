@@ -25,10 +25,10 @@ public class TelegramCommandService {
         String[] parts = text.split(" ", 2);
 
         log.atDebug()
-            .addKeyValue("updateId", update.updateId())
-            .addKeyValue("chatId",chatId)
-            .addKeyValue("text", text)
-            .log("Received Telegram update");
+                .addKeyValue("updateId", update.updateId())
+                .addKeyValue("chatId", chatId)
+                .addKeyValue("text", text)
+                .log("Received Telegram update");
 
         Command command = commandRegistry.getCommand(parts[0]);
         String response = command.execute(chatId, parts);
@@ -36,11 +36,10 @@ public class TelegramCommandService {
         telegramBot.execute(new SendMessage(chatId.toString(), response));
 
         log.atDebug()
-            .addKeyValue("chatId", chatId)
-            .addKeyValue("command", command.getClass().getSimpleName())
-            .addKeyValue("response", response)
-            .log("Executed Telegram command and sent response");
-
+                .addKeyValue("chatId", chatId)
+                .addKeyValue("command", command.getClass().getSimpleName())
+                .addKeyValue("response", response)
+                .log("Executed Telegram command and sent response");
     }
 
     public CommandRegistry getCommandRegistry() {

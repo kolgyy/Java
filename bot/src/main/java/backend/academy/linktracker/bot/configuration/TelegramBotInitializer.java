@@ -28,8 +28,7 @@ public class TelegramBotInitializer {
 
         telegramBot.setUpdatesListener(listener);
 
-        log.atInfo()
-            .log("Telegram bot listener initialized");
+        log.atInfo().log("Telegram bot listener initialized");
 
         return listener;
     }
@@ -43,8 +42,9 @@ public class TelegramBotInitializer {
         telegramBot.execute(new SetMyCommands(botCommands.toArray(new BotCommand[0])));
 
         log.atInfo()
-            .addKeyValue("commands", botCommands.stream().map(BotCommand::command).toList())
-            .log("Telegram bot commands set");
-
+                .addKeyValue(
+                        "commands",
+                        botCommands.stream().map(BotCommand::command).toList())
+                .log("Telegram bot commands set");
     }
 }
