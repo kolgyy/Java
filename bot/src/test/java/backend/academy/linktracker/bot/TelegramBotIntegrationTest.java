@@ -1,45 +1,45 @@
-//package backend.academy.linktracker.bot;
+// package backend.academy.linktracker.bot;
 //
-//import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-//import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-//import static com.github.tomakehurst.wiremock.client.WireMock.post;
-//import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-//import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-//import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-//import static com.github.tomakehurst.wiremock.client.WireMock.urlPathTemplate;
-//import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-//import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
+// import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+// import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+// import static com.github.tomakehurst.wiremock.client.WireMock.post;
+// import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+// import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+// import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+// import static com.github.tomakehurst.wiremock.client.WireMock.urlPathTemplate;
+// import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+// import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertFalse;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
 //
-//import backend.academy.linktracker.bot.properties.TelegramProperties;
-//import com.pengrad.telegrambot.TelegramBot;
-//import com.pengrad.telegrambot.UpdatesListener;
-//import com.pengrad.telegrambot.model.Message;
-//import com.pengrad.telegrambot.model.Update;
-//import com.pengrad.telegrambot.model.User;
-//import com.pengrad.telegrambot.request.GetUpdates;
-//import java.util.List;
-//import java.util.concurrent.CopyOnWriteArrayList;
-//import java.util.concurrent.CountDownLatch;
-//import java.util.concurrent.TimeUnit;
-//import org.assertj.core.api.WithAssertions;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.context.annotation.Import;
-//import org.springframework.http.HttpHeaders;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.ActiveProfiles;
-//import org.wiremock.spring.EnableWireMock;
+// import backend.academy.linktracker.bot.properties.TelegramProperties;
+// import com.pengrad.telegrambot.TelegramBot;
+// import com.pengrad.telegrambot.UpdatesListener;
+// import com.pengrad.telegrambot.model.Message;
+// import com.pengrad.telegrambot.model.Update;
+// import com.pengrad.telegrambot.model.User;
+// import com.pengrad.telegrambot.request.GetUpdates;
+// import java.util.List;
+// import java.util.concurrent.CopyOnWriteArrayList;
+// import java.util.concurrent.CountDownLatch;
+// import java.util.concurrent.TimeUnit;
+// import org.assertj.core.api.WithAssertions;
+// import org.junit.jupiter.api.AfterEach;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.context.annotation.Import;
+// import org.springframework.http.HttpHeaders;
+// import org.springframework.http.MediaType;
+// import org.springframework.test.context.ActiveProfiles;
+// import org.wiremock.spring.EnableWireMock;
 //
-//@SpringBootTest
-//@Import(TestcontainersConfiguration.class)
-//@ActiveProfiles("test")
-//@EnableWireMock
-//class TelegramBotIntegrationTest implements WithAssertions {
+// @SpringBootTest
+// @Import(TestcontainersConfiguration.class)
+// @ActiveProfiles("test")
+// @EnableWireMock
+// class TelegramBotIntegrationTest implements WithAssertions {
 //
 //    @Autowired
 //    TelegramBot telegramBot;
@@ -143,4 +143,4 @@
 //        verify(postRequestedFor(urlPathTemplate("/bot{token}/getUpdates"))
 //                .withPathParam("token", equalTo(telegramProperties.getToken())));
 //    }
-//}
+// }

@@ -13,13 +13,13 @@ LinkTracker – Telegram-бот, который отслеживает изме�
 В корне проекта нужно создать .env файл и указать следующие параметры (либо же использовать запуск с использованием переменных среды):
 
 - **SPRING_PROFILES_ACTIVE=dev** - профиль запуска приложения.
-Доступные параметры: **dev** и **prod**.
+  Доступные параметры: **dev** и **prod**.
 - **TELEGRAM_TOKEN=your_real_telegram_token** - токен бота Телеграм, его можно получить, используя BotFather в Телеграм.
 
 ## Running the Bot
 
 - **Перейдите в модуль bot:**
- cd bot
+  cd bot
 - **Запуск через Maven:**
   SPRING_PROFILES_ACTIVE=dev TELEGRAM_TOKEN=your_real_token ./mvnw spring-boot:run -pl bot
 
@@ -28,14 +28,14 @@ LinkTracker – Telegram-бот, который отслеживает изме�
 ## Project Build
 
 **Linux / MacOS**
- ./mvnw clean verify
+./mvnw clean verify
 
 **Windows**:
- mvnw.cmd clean verify
+mvnw.cmd clean verify
 
 ## Run tests
 
- ./mvnw test
+./mvnw test
 
 ## Requirements
 
@@ -46,6 +46,7 @@ LinkTracker – Telegram-бот, который отслеживает изме�
 ## Code Quality
 
 - **Format code:**
- ./mvnw spotless:apply
+  ./mvnw spotless:apply
 - **Check linters:**
   mvn clean compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
+
