@@ -18,10 +18,10 @@ LinkTracker – Telegram-бот, который отслеживает изме�
 
 ## Running the Bot
 
-- **Перейдите в модуль bot:**
-  cd bot
-- **Запуск через Maven:**
-  SPRING_PROFILES_ACTIVE=dev TELEGRAM_TOKEN=your_real_token ./mvnw spring-boot:run -pl bot
+Запуск из корня проекта:
+
+```bash
+SPRING_PROFILES_ACTIVE=dev TELEGRAM_TOKEN=your_real_token ./mvnw spring-boot:run -pl bot
 
 **Или запустите основной класс с @SpringBootApplication через IDE, указав .env-файл с переменными токена и профиля.**
 
@@ -49,4 +49,6 @@ mvnw.cmd clean verify
   ./mvnw spotless:apply
 - **Check linters:**
   mvn clean compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
+
+```
 
