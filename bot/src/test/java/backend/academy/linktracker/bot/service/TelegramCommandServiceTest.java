@@ -7,6 +7,7 @@ import backend.academy.linktracker.bot.command.CommandRegistry;
 import backend.academy.linktracker.bot.command.HelpCommand;
 import backend.academy.linktracker.bot.command.StartCommand;
 import backend.academy.linktracker.bot.command.UnknownCommand;
+import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
 import backend.academy.linktracker.bot.repository.UserRepository;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
@@ -28,9 +29,27 @@ class TelegramCommandServiceTest {
     void setUp() {
         telegramBot = mock(TelegramBot.class);
 
+        BotCommandsProperties properties = mock(BotCommandsProperties.class);
+
+        BotCommandsProperties.Start startProps =
+            new BotCommandsProperties.Start("/start", "Начало работы", "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
+        BotCommandsProperties.Help helpProps =
+            new BotCommandsProperties.Help("/help", "Список доступных команд", "Доступные команды:");
+        BotCommandsProperties.Unknown unknownProps =
+            new BotCommandsProperties.Unknown("unknown", "Неизвестная команда", "Неизвестная команда. Воспользуйтесь /help.");
+
+        when(properties.start()).thenReturn(startProps);
+        when(properties.help()).thenReturn(helpProps);
+        when(properties.unknown()).thenReturn(unknownProps);
+
+        StartCommand startCommand = new StartCommand(new UserService(mock(UserRepository.class)), properties);
+        HelpCommand helpCommand = new HelpCommand(List.of(startCommand), properties);
+        UnknownCommand unknownCommand = new UnknownCommand(properties);
+
         commandRegistry = new CommandRegistry(
-                List.of(new StartCommand(new UserService(mock(UserRepository.class))), new HelpCommand(List.of())),
-                new UnknownCommand());
+            List.of(startCommand, helpCommand),
+            unknownCommand
+        );
 
         service = new TelegramCommandService(commandRegistry, telegramBot);
     }
