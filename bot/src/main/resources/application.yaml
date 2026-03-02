@@ -12,6 +12,21 @@ app:
     update-listener-sleep: 1s
     debug: false
 
+bot:
+  commands:
+    start:
+      name: "/start"
+      description: "Начало работы"
+      message: "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды."
+    help:
+      name: "/help"
+      description: "Список доступных команд"
+      header: "Доступные команды:"
+    unknown:
+      name: "unknown"
+      description: "Неизвестная команда"
+      message: "Неизвестная команда. Воспользуйтесь /help."
+
 logging:
   level:
     root: INFO

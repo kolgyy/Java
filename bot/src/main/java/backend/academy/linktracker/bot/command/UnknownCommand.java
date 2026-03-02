@@ -1,20 +1,25 @@
 package backend.academy.linktracker.bot.command;
 
+import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class UnknownCommand implements Command {
+
+    private final BotCommandsProperties properties;
 
     @Override
     public String name() {
-        return "unknown";
+        return properties.unknown().name();
     }
 
     @Override
     public String description() {
-        return "";
+        return properties.unknown().description();
     }
 
     @Override
@@ -22,6 +27,7 @@ public class UnknownCommand implements Command {
 
         log.atInfo().addKeyValue("chatId", chatId).addKeyValue("args", args).log("Unknown command received");
 
-        return "Неизвестная команда. Воспользуйтесь /help.";
+        return properties.unknown().message();
     }
 }
+
