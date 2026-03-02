@@ -1,7 +1,7 @@
 package backend.academy.linktracker.bot.command;
 
-import java.util.List;
 import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

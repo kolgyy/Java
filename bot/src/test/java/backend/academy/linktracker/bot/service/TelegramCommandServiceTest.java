@@ -31,12 +31,12 @@ class TelegramCommandServiceTest {
 
         BotCommandsProperties properties = mock(BotCommandsProperties.class);
 
-        BotCommandsProperties.Start startProps =
-            new BotCommandsProperties.Start("/start", "Начало работы", "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
+        BotCommandsProperties.Start startProps = new BotCommandsProperties.Start(
+                "/start", "Начало работы", "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
         BotCommandsProperties.Help helpProps =
-            new BotCommandsProperties.Help("/help", "Список доступных команд", "Доступные команды:");
-        BotCommandsProperties.Unknown unknownProps =
-            new BotCommandsProperties.Unknown("unknown", "Неизвестная команда", "Неизвестная команда. Воспользуйтесь /help.");
+                new BotCommandsProperties.Help("/help", "Список доступных команд", "Доступные команды:");
+        BotCommandsProperties.Unknown unknownProps = new BotCommandsProperties.Unknown(
+                "unknown", "Неизвестная команда", "Неизвестная команда. Воспользуйтесь /help.");
 
         when(properties.start()).thenReturn(startProps);
         when(properties.help()).thenReturn(helpProps);
@@ -46,10 +46,7 @@ class TelegramCommandServiceTest {
         HelpCommand helpCommand = new HelpCommand(List.of(startCommand), properties);
         UnknownCommand unknownCommand = new UnknownCommand(properties);
 
-        commandRegistry = new CommandRegistry(
-            List.of(startCommand, helpCommand),
-            unknownCommand
-        );
+        commandRegistry = new CommandRegistry(List.of(startCommand, helpCommand), unknownCommand);
 
         service = new TelegramCommandService(commandRegistry, telegramBot);
     }

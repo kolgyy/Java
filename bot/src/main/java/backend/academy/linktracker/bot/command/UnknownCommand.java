@@ -30,4 +30,3 @@ public class UnknownCommand implements Command {
         return properties.unknown().message();
     }
 }
-
