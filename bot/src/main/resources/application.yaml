@@ -32,6 +32,14 @@ bot:
       cancel-message: "Процесс отслеживания отменён."
       skip-command: "/skip"
       cancel-command: "/cancel"
+    untrack:
+      name: "/untrack"
+      description: "Прекратить отслеживание ссылки"
+      cancel-command: "/cancel"
+      cancel-message: "Удаление ссылки отменено"
+      ask-link-message: "Введите ссылку, которую хотите удалить"
+      success-message: "Ссылка успешно удалена"
+      link-not-found-message: "Ссылка не найдена"
     unknown:
       name: "unknown"
       description: "Неизвестная команда"
