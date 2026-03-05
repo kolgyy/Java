@@ -5,6 +5,7 @@ import backend.academy.linktracker.bot.command.CommandRegistry;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TelegramCommandService {
 
+    @Getter
     private final CommandRegistry commandRegistry;
     private final TelegramBot telegramBot;
 
@@ -40,9 +42,5 @@ public class TelegramCommandService {
                 .addKeyValue("command", command.getClass().getSimpleName())
                 .addKeyValue("response", response)
                 .log("Executed Telegram command and sent response");
-    }
-
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
     }
 }
