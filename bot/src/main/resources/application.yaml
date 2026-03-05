@@ -22,6 +22,16 @@ bot:
       name: "/help"
       description: "Список доступных команд"
       header: "Доступные команды:"
+    track:
+      name: "/track"
+      description: "Добавить ссылку"
+      ask-link-message: "Введите ссылку:"
+      already-tracked-message: "Ссылка уже отслеживается"
+      ask-tags-message: "Введите теги через запятую (или /skip):"
+      success-message: "Ссылка успешно добавлена!"
+      cancel-message: "Процесс отслеживания отменён."
+      skip-command: "/skip"
+      cancel-command: "/cancel"
     unknown:
       name: "unknown"
       description: "Неизвестная команда"
