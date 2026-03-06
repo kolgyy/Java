@@ -40,6 +40,11 @@ bot:
       ask-link-message: "Введите ссылку, которую хотите удалить"
       success-message: "Ссылка успешно удалена"
       link-not-found-message: "Ссылка не найдена"
+    list:
+      name: "/list"
+      description: "Показать список отслеживаемых ссылок"
+      empty-message: "Вы пока не отслеживаете ни одной ссылки"
+      header: "Отслеживаемые ссылки:"
     unknown:
       name: "unknown"
       description: "Неизвестная команда"
