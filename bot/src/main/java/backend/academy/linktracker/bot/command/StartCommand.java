@@ -1,6 +1,7 @@
 package backend.academy.linktracker.bot.command;
 
 import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
+import backend.academy.linktracker.bot.service.ScrapperService;
 import backend.academy.linktracker.bot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StartCommand implements UserCommand {
 
+    private final ScrapperService scrapperService;
     private final UserService userService;
     private final BotCommandsProperties properties;
 
@@ -34,6 +36,7 @@ public class StartCommand implements UserCommand {
 
         if (!userService.isRegistered(chatId)) {
             userService.register(chatId);
+            scrapperService.registerChat(chatId);
         }
         return properties.start().message();
     }

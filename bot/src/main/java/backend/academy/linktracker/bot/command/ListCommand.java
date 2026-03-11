@@ -1,18 +1,21 @@
 package backend.academy.linktracker.bot.command;
 
 import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
-import backend.academy.linktracker.bot.model.Link;
-import backend.academy.linktracker.bot.service.LinkService;
+import backend.academy.linktracker.bot.dto.response.LinkResponse;
+import backend.academy.linktracker.bot.dto.response.ListLinksResponse;
+import backend.academy.linktracker.bot.service.ScrapperService;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ListCommand implements UserCommand {
 
-    private final LinkService linkService;
+    private final ScrapperService scrapperService;
     private final BotCommandsProperties properties;
 
     @Override
@@ -28,32 +31,43 @@ public class ListCommand implements UserCommand {
     @Override
     public String execute(Long chatId, String[] args) {
 
-        List<Link> links;
+        log.atInfo()
+                .addKeyValue("chatId", chatId)
+                .addKeyValue("command", name())
+                .log("Executing list command");
+
+        Optional<ListLinksResponse> responseOpt = scrapperService.getLinks(chatId);
+
+        if (responseOpt.isEmpty()) {
+            return properties.list().emptyMessage();
+        }
+
+        List<LinkResponse> links = responseOpt.get().links();
 
         if (args.length > 1 && !args[1].isBlank()) {
             String tag = args[1].trim();
-            links = linkService.getLinksByTag(chatId, tag);
-        } else {
-            links = linkService.getLinks(chatId);
+
+            links = links.stream()
+                    .filter(link -> link.tags() != null && link.tags().contains(tag))
+                    .toList();
         }
 
         if (links.isEmpty()) {
             return properties.list().emptyMessage();
         }
 
-        StringBuilder response = new StringBuilder(properties.list().header() + "\n");
+        StringBuilder result = new StringBuilder(properties.list().header() + "\n");
 
-        for (Link link : links) {
-            response.append("- ").append(link.getUrl());
+        for (LinkResponse link : links) {
+            result.append("- ").append(link.url());
 
-            if (link.getTags() != null && !link.getTags().isEmpty()) {
-                response.append(" [");
-                response.append(String.join(", ", link.getTags()));
-                response.append("]");
+            if (link.tags() != null && !link.tags().isEmpty()) {
+                result.append(" [").append(String.join(", ", link.tags())).append("]");
             }
 
-            response.append("\n");
+            result.append("\n");
         }
-        return response.toString();
+
+        return result.toString();
     }
 }

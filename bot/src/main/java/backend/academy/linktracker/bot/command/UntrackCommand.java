@@ -1,9 +1,10 @@
 package backend.academy.linktracker.bot.command;
 
 import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
+import backend.academy.linktracker.bot.dto.request.RemoveLinkRequest;
 import backend.academy.linktracker.bot.model.UserSession;
 import backend.academy.linktracker.bot.model.UserState;
-import backend.academy.linktracker.bot.service.LinkService;
+import backend.academy.linktracker.bot.service.ScrapperService;
 import backend.academy.linktracker.bot.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class UntrackCommand implements UserCommand {
 
     private final UserSessionService sessionService;
-    private final LinkService linkService;
+    private final ScrapperService scrapperService;
     private final BotCommandsProperties properties;
 
     @Override
@@ -31,39 +32,57 @@ public class UntrackCommand implements UserCommand {
     @Override
     public String execute(Long chatId, String[] args) {
         UserSession session = sessionService.getSession(chatId);
-        String text = args.length > 1 ? args[1].trim() : null;
+        String text = extractText(args);
 
-        if (text != null && text.equalsIgnoreCase(properties.untrack().cancelCommand())) {
+        if (isCancel(text)) {
             sessionService.resetAll(chatId);
             return properties.untrack().cancelMessage();
         }
 
-        switch (session.getState()) {
-            case IDLE -> {
-                session.setState(UserState.AWAITING_LINK);
-                sessionService.save(session);
-                return properties.untrack().askLinkMessage();
-            }
+        return switch (session.getState()) {
+            case IDLE -> startUntrack(session);
+            case AWAITING_LINK -> handleLink(chatId, text);
+            default -> resetAndRestart(chatId);
+        };
+    }
 
-            case AWAITING_LINK -> {
-                if (text == null || text.isBlank()) {
-                    return properties.untrack().askLinkMessage();
-                }
+    private String extractText(String[] args) {
+        return (args != null && args.length > 0) ? String.join(" ", args).trim() : null;
+    }
 
-                boolean removed = linkService.removeLink(chatId, text);
-                sessionService.resetState(chatId);
+    private boolean isCancel(String text) {
+        return text != null && text.equalsIgnoreCase(properties.untrack().cancelCommand());
+    }
 
-                if (removed) {
-                    return properties.untrack().successMessage();
-                } else {
-                    return properties.untrack().linkNotFoundMessage();
-                }
-            }
+    private String startUntrack(UserSession session) {
+        session.setState(UserState.AWAITING_LINK);
+        session.setCurrentCommand(name());
+        sessionService.save(session);
 
-            default -> {
-                sessionService.resetState(chatId);
-                return properties.untrack().askLinkMessage();
-            }
+        return properties.untrack().askLinkMessage();
+    }
+
+    private String handleLink(Long chatId, String text) {
+
+        if (text == null || text.isBlank()) {
+            return properties.untrack().askLinkMessage();
         }
+
+        log.atInfo().addKeyValue("chatId", chatId).addKeyValue("url", text).log("User attempts to untrack link");
+
+        RemoveLinkRequest request = new RemoveLinkRequest(text);
+
+        boolean removed = scrapperService.removeLink(chatId, request).isPresent();
+
+        sessionService.resetState(chatId);
+
+        return removed
+                ? properties.untrack().successMessage()
+                : properties.untrack().linkNotFoundMessage();
+    }
+
+    private String resetAndRestart(Long chatId) {
+        sessionService.resetState(chatId);
+        return properties.untrack().askLinkMessage();
     }
 }
