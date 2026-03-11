@@ -15,18 +15,21 @@ public class UserSession {
     private String currentLink;
     private String currentTags;
 
+    private String currentCommand;
+
     public UserSession(Long chatId) {
         this.chatId = chatId;
     }
 
     public void resetState() {
         this.state = UserState.IDLE;
+        this.currentCommand = null;
     }
 
     public void resetAll() {
         this.state = UserState.IDLE;
         this.currentLink = null;
         this.currentTags = null;
+        this.currentCommand = null;
     }
-
 }
