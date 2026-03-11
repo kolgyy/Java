@@ -1,11 +1,18 @@
 server:
   port: 8080
 
+
 spring:
   application:
     name: bot
+  grpc:
+    server:
+      port: 9090
 
 app:
+  communication:
+    client: ${COMMUNICATION_PROTOCOL}
+    server: ${COMMUNICATION_PROTOCOL}
   telegram:
     url: https://api.telegram.org/bot
     token: ${TELEGRAM_TOKEN} # Use env variable. DO NOT KEEP TOKEN HERE
@@ -13,6 +20,8 @@ app:
     debug: false
 
 bot:
+  messages:
+    link-updated: "Получено обновление!\n\nСсылка: %s\nОписание: %s"
   commands:
     start:
       name: "/start"
@@ -26,29 +35,37 @@ bot:
       name: "/track"
       description: "Добавить ссылку"
       ask-link-message: "Введите ссылку:"
-      already-tracked-message: "Ссылка уже отслеживается"
+      already-tracked-message: "Ссылка уже отслеживается."
       ask-tags-message: "Введите теги через запятую (или /skip):"
       success-message: "Ссылка успешно добавлена!"
       cancel-message: "Процесс отслеживания отменён."
       skip-command: "/skip"
       cancel-command: "/cancel"
+      invalid-link-message: "Некорректная ссылка. Поддерживаются только GitHub и StackOverflow."
     untrack:
       name: "/untrack"
       description: "Прекратить отслеживание ссылки"
       cancel-command: "/cancel"
-      cancel-message: "Удаление ссылки отменено"
-      ask-link-message: "Введите ссылку, которую хотите удалить"
-      success-message: "Ссылка успешно удалена"
-      link-not-found-message: "Ссылка не найдена"
+      cancel-message: "Удаление ссылки отменено."
+      ask-link-message: "Введите ссылку, которую хотите удалить:"
+      success-message: "Ссылка успешно удалена."
+      link-not-found-message: "Ссылка не найдена."
     list:
       name: "/list"
       description: "Показать список отслеживаемых ссылок"
-      empty-message: "Вы пока не отслеживаете ни одной ссылки"
+      empty-message: "Вы пока не отслеживаете ни одной ссылки."
       header: "Отслеживаемые ссылки:"
     unknown:
       name: "unknown"
       description: "Неизвестная команда"
       message: "Неизвестная команда. Воспользуйтесь /help."
+
+scrapper:
+  http:
+    base-url: http://localhost:8081
+  grpc:
+    host: localhost
+    port: 9091
 
 logging:
   level:
