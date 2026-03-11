@@ -35,16 +35,15 @@ public class ListCommand implements UserCommand {
                 .addKeyValue("command", name())
                 .log("Executing list command");
 
-        List<LinkResponse> links = scrapperService.getLinks(chatId)
-            .map(ListLinksResponse::links)
-            .orElse(List.of());
+        List<LinkResponse> links =
+                scrapperService.getLinks(chatId).map(ListLinksResponse::links).orElse(List.of());
 
         if (args.length > 1 && !args[1].isBlank()) {
             String tag = args[1].trim();
 
             links = links.stream()
-                .filter(link -> link.tags() != null && link.tags().contains(tag))
-                .toList();
+                    .filter(link -> link.tags() != null && link.tags().contains(tag))
+                    .toList();
         }
 
         if (links.isEmpty()) {
