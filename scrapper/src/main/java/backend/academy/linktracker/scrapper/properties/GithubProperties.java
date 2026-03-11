@@ -18,4 +18,7 @@ public class GithubProperties {
 
     @NotEmpty
     private String token;
+
+    @NotEmpty
+    private String baseUrl;
 }
