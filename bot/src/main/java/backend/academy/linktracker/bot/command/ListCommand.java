@@ -5,7 +5,6 @@ import backend.academy.linktracker.bot.dto.response.LinkResponse;
 import backend.academy.linktracker.bot.dto.response.ListLinksResponse;
 import backend.academy.linktracker.bot.service.ScrapperService;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -36,20 +35,16 @@ public class ListCommand implements UserCommand {
                 .addKeyValue("command", name())
                 .log("Executing list command");
 
-        Optional<ListLinksResponse> responseOpt = scrapperService.getLinks(chatId);
-
-        if (responseOpt.isEmpty()) {
-            return properties.list().emptyMessage();
-        }
-
-        List<LinkResponse> links = responseOpt.get().links();
+        List<LinkResponse> links = scrapperService.getLinks(chatId)
+            .map(ListLinksResponse::links)
+            .orElse(List.of());
 
         if (args.length > 1 && !args[1].isBlank()) {
             String tag = args[1].trim();
 
             links = links.stream()
-                    .filter(link -> link.tags() != null && link.tags().contains(tag))
-                    .toList();
+                .filter(link -> link.tags() != null && link.tags().contains(tag))
+                .toList();
         }
 
         if (links.isEmpty()) {

@@ -20,7 +20,7 @@ public class TgChatController {
     @PostMapping("/{id}")
     public ResponseEntity<TgChat> registerChat(@PathVariable("id") Long chatId) {
 
-        TgChat chat = service.registerChat(chatId);
+        service.registerChat(chatId);
 
         return ResponseEntity.ok().build();
     }

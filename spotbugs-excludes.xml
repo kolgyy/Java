@@ -68,6 +68,11 @@
         </Or>
     </Match>
 
+    <!-- Exclude all generated gRPC/Protobuf classes (all modules) -->
+    <Match>
+        <Package name="~.*\.grpc(\..*)?"/>
+    </Match>
+
     <!-- JMH exclusions -->
     <Match>
         <Package name="~.*\.jmh_generated"/>
