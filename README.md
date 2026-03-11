@@ -56,6 +56,7 @@ mvnw.cmd clean verify
   mvn clean compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
 
 ```
+
 ## Running the Scrapper
 
 Запуск из корня проекта:
@@ -91,3 +92,4 @@ mvnw.cmd clean verify
   mvn clean compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
 
 ```
+
