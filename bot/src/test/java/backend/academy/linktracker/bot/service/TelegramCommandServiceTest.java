@@ -1,20 +1,15 @@
 package backend.academy.linktracker.bot.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import backend.academy.linktracker.bot.command.Command;
 import backend.academy.linktracker.bot.command.CommandRegistry;
-import backend.academy.linktracker.bot.command.HelpCommand;
-import backend.academy.linktracker.bot.command.StartCommand;
-import backend.academy.linktracker.bot.command.UnknownCommand;
-import backend.academy.linktracker.bot.configuration.BotCommandsProperties;
-import backend.academy.linktracker.bot.repository.UserRepository;
+import backend.academy.linktracker.bot.model.UserSession;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,126 +18,156 @@ class TelegramCommandServiceTest {
 
     private TelegramBot telegramBot;
     private CommandRegistry commandRegistry;
+    private UserSessionService sessionService;
+
     private TelegramCommandService service;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
+
         telegramBot = mock(TelegramBot.class);
+        commandRegistry = mock(CommandRegistry.class);
+        sessionService = mock(UserSessionService.class);
 
-        BotCommandsProperties properties = mock(BotCommandsProperties.class);
-
-        BotCommandsProperties.Start startProps = new BotCommandsProperties.Start(
-                "/start", "Начало работы", "Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
-        BotCommandsProperties.Help helpProps =
-                new BotCommandsProperties.Help("/help", "Список доступных команд", "Доступные команды:");
-        BotCommandsProperties.Unknown unknownProps = new BotCommandsProperties.Unknown(
-                "unknown", "Неизвестная команда", "Неизвестная команда. Воспользуйтесь /help.");
-
-        when(properties.start()).thenReturn(startProps);
-        when(properties.help()).thenReturn(helpProps);
-        when(properties.unknown()).thenReturn(unknownProps);
-
-        StartCommand startCommand = new StartCommand(new UserService(mock(UserRepository.class)), properties);
-        HelpCommand helpCommand = new HelpCommand(List.of(startCommand), properties);
-        UnknownCommand unknownCommand = new UnknownCommand(properties);
-
-        commandRegistry = new CommandRegistry(List.of(startCommand, helpCommand), unknownCommand);
-
-        service = new TelegramCommandService(commandRegistry, telegramBot);
+        service = new TelegramCommandService(commandRegistry, telegramBot, sessionService);
     }
 
-    @Test
-    void testStartCommand() {
-
-        // Arrange
-        Long chatId = 123L;
+    private Update createUpdate(Long chatId, String text) {
 
         Update update = mock(Update.class);
         Message message = mock(Message.class);
         Chat chat = mock(Chat.class);
 
         when(update.message()).thenReturn(message);
-        when(message.text()).thenReturn("/start");
+        when(message.text()).thenReturn(text);
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
 
-        // Act
-        service.handleUpdate(update);
-
-        // Assert
-        ArgumentCaptor<SendMessage> captor = ArgumentCaptor.forClass(SendMessage.class);
-        verify(telegramBot, times(1)).execute(captor.capture());
-
-        SendMessage sent = captor.getValue();
-        String text = (String) sent.getParameters().get("text");
-        String chatIdSent = (String) sent.getParameters().get("chat_id");
-
-        assertThat(text)
-                .isNotNull()
-                .isEqualTo("Добро пожаловать! Используйте /help, чтобы посмотреть доступные команды.");
-
-        assertThat(chatIdSent).isEqualTo(chatId.toString());
+        return update;
     }
 
     @Test
-    void testHelpCommand() {
+    void shouldExecuteCommandWhenCommandExists() {
 
-        // Arrange
-        Long chatId = 456L;
+        Long chatId = 1L;
 
-        Update update = mock(Update.class);
-        Message message = mock(Message.class);
-        Chat chat = mock(Chat.class);
+        Update update = createUpdate(chatId, "/start");
 
-        when(update.message()).thenReturn(message);
-        when(message.text()).thenReturn("/help");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
+        Command command = mock(Command.class);
+        UserSession session = new UserSession(chatId);
 
-        // Act
+        when(sessionService.getSession(chatId)).thenReturn(session);
+        when(commandRegistry.hasCommand("/start")).thenReturn(true);
+        when(commandRegistry.getCommand("/start")).thenReturn(command);
+        when(command.execute(eq(chatId), any())).thenReturn("response");
+
         service.handleUpdate(update);
 
-        // Assert
+        verify(sessionService).resetAll(chatId);
+        verify(command).execute(eq(chatId), any());
+        verify(telegramBot).execute(any(SendMessage.class));
+    }
+
+    @Test
+    void shouldUseSessionCommandWhenNoNewCommand() {
+
+        Long chatId = 2L;
+
+        Update update = createUpdate(chatId, "some text");
+
+        Command command = mock(Command.class);
+
+        UserSession session = new UserSession(chatId);
+        session.setCurrentCommand("/track");
+
+        when(sessionService.getSession(chatId)).thenReturn(session);
+        when(commandRegistry.hasCommand("some")).thenReturn(false);
+        when(commandRegistry.getCommand("/track")).thenReturn(command);
+        when(command.execute(eq(chatId), any())).thenReturn("track response");
+
+        service.handleUpdate(update);
+
+        verify(command).execute(eq(chatId), any());
+        verify(telegramBot).execute(any(SendMessage.class));
+    }
+
+    @Test
+    void shouldUseUnknownCommandWhenNoSessionCommand() {
+
+        Long chatId = 3L;
+
+        Update update = createUpdate(chatId, "/unknown");
+
+        Command command = mock(Command.class);
+
+        UserSession session = new UserSession(chatId);
+
+        when(sessionService.getSession(chatId)).thenReturn(session);
+        when(commandRegistry.hasCommand("/unknown")).thenReturn(false);
+        when(commandRegistry.getCommand("/unknown")).thenReturn(command);
+        when(command.execute(eq(chatId), any())).thenReturn("unknown");
+
+        service.handleUpdate(update);
+
+        verify(command).execute(eq(chatId), any());
+        verify(telegramBot).execute(any(SendMessage.class));
+    }
+
+    @Test
+    void shouldSendCorrectMessageToTelegram() {
+
+        Long chatId = 4L;
+
+        Update update = createUpdate(chatId, "/help");
+
+        Command command = mock(Command.class);
+        UserSession session = new UserSession(chatId);
+
+        when(sessionService.getSession(chatId)).thenReturn(session);
+        when(commandRegistry.hasCommand("/help")).thenReturn(true);
+        when(commandRegistry.getCommand("/help")).thenReturn(command);
+        when(command.execute(eq(chatId), any())).thenReturn("help text");
+
+        service.handleUpdate(update);
+
         ArgumentCaptor<SendMessage> captor = ArgumentCaptor.forClass(SendMessage.class);
+
         verify(telegramBot).execute(captor.capture());
 
-        SendMessage sent = captor.getValue();
-        String text = (String) sent.getParameters().get("text");
-        String chatIdSent = (String) sent.getParameters().get("chat_id");
+        SendMessage message = captor.getValue();
 
-        assertThat(text).isNotNull().contains("Доступные команды");
+        String text = (String) message.getParameters().get("text");
+        String chat = (String) message.getParameters().get("chat_id");
 
-        assertThat(chatIdSent).isEqualTo(chatId.toString());
+        assert text.equals("help text");
+        assert chat.equals(chatId.toString());
     }
 
     @Test
-    void testUnknownCommand() {
+    void shouldIgnoreUpdateWithoutMessage() {
 
-        // Arrange
-        Long chatId = 789L;
+        Update update = mock(Update.class);
+
+        when(update.message()).thenReturn(null);
+
+        service.handleUpdate(update);
+
+        verifyNoInteractions(commandRegistry);
+        verifyNoInteractions(telegramBot);
+    }
+
+    @Test
+    void shouldIgnoreUpdateWithoutText() {
 
         Update update = mock(Update.class);
         Message message = mock(Message.class);
-        Chat chat = mock(Chat.class);
 
         when(update.message()).thenReturn(message);
-        when(message.text()).thenReturn("/unknown");
-        when(message.chat()).thenReturn(chat);
-        when(chat.id()).thenReturn(chatId);
+        when(message.text()).thenReturn(null);
 
-        // Act
         service.handleUpdate(update);
 
-        // Assert
-        ArgumentCaptor<SendMessage> captor = ArgumentCaptor.forClass(SendMessage.class);
-        verify(telegramBot).execute(captor.capture());
-
-        SendMessage sent = captor.getValue();
-        String text = (String) sent.getParameters().get("text");
-        String chatIdSent = (String) sent.getParameters().get("chat_id");
-
-        assertThat(text).isNotNull().isEqualTo("Неизвестная команда. Воспользуйтесь /help.");
-
-        assertThat(chatIdSent).isEqualTo(chatId.toString());
+        verifyNoInteractions(commandRegistry);
+        verifyNoInteractions(telegramBot);
     }
 }
