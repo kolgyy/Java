@@ -8,9 +8,26 @@ public record BotCommandsProperties(Start start, Help help, Unknown unknown, Tra
 
     public record Help(String name, String description, String header) {}
 
-    public record Track(String name, String description, String askLinkMessage, String alreadyTrackedMessage, String askTagsMessage, String successMessage, String cancelMessage, String skipCommand, String cancelCommand) {}
+    public record Track(
+            String name,
+            String description,
+            String askLinkMessage,
+            String invalidLinkMessage,
+            String alreadyTrackedMessage,
+            String askTagsMessage,
+            String successMessage,
+            String cancelMessage,
+            String skipCommand,
+            String cancelCommand) {}
 
-    public record Untrack(String name, String description, String cancelCommand, String cancelMessage, String askLinkMessage, String successMessage, String linkNotFoundMessage) {}
+    public record Untrack(
+            String name,
+            String description,
+            String cancelCommand,
+            String cancelMessage,
+            String askLinkMessage,
+            String successMessage,
+            String linkNotFoundMessage) {}
 
     public record List(String name, String description, String emptyMessage, String header) {}
 
