@@ -4,10 +4,32 @@ server:
 spring:
   application:
     name: scrapper
+  grpc:
+    server:
+      port: 9091
 
 app:
+  communication:
+    server: ${COMMUNICATION_PROTOCOL}
+    client: ${COMMUNICATION_PROTOCOL}
+  scheduler:
+    delay: 60s
   stackoverflow:
     key: ${STACKOVERFLOW_KEY} # Use env variable. DO NOT KEEP TOKEN HERE
     access-token: ${STACKOVERFLOW_ACCESS_KEY} # Use env variable. DO NOT KEEP TOKEN HERE
+    base-url: https://api.stackexchange.com
   github:
+    base-url: https://api.github.com
     token: ${GITHUB_TOKEN} # Use env variable. DO NOT KEEP TOKEN HERE
+
+bot:
+  http:
+    base-url: http://localhost:8080
+  grpc:
+    host: localhost
+    port: 9090
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
