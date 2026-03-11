@@ -36,6 +36,10 @@ public class CommandRegistry {
         return command;
     }
 
+    public Boolean hasCommand(String name) {
+        return commands.containsKey(name);
+    }
+
     public Collection<Command> getCommands() {
         return commands.values();
     }
