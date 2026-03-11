@@ -313,6 +313,12 @@
                         <rulesets>
                             <ruleset>pmd.xml</ruleset>
                         </rulesets>
+                        <!-- Исключаем все сгенерированные файлы -->
+                        <excludeRoots>
+                            <excludeRoot>${project.build.directory}/generated-sources</excludeRoot>
+                        </excludeRoots>
+                        <excludes>**/grpc/**
+                            **/generated/**</excludes>
                     </configuration>
                     <dependencies>
                         <dependency>
