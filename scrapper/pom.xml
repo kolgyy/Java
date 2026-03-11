@@ -83,14 +83,14 @@
         <!--     <artifactId>opentelemetry-logback-appender-1.0</artifactId> -->
         <!-- </dependency> -->
 
-         <dependency>
-             <groupId>org.springframework.grpc</groupId>
-             <artifactId>spring-grpc-spring-boot-starter</artifactId>
-         </dependency>
-         <dependency>
-             <groupId>io.grpc</groupId>
-             <artifactId>grpc-services</artifactId>
-         </dependency>
+        <dependency>
+            <groupId>org.springframework.grpc</groupId>
+            <artifactId>spring-grpc-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-services</artifactId>
+        </dependency>
 
         <!-- GraphQL: -->
         <!-- <dependency> -->
@@ -190,17 +190,17 @@
 
     <build>
         <plugins>
-             <plugin>
-                 <groupId>io.github.ascopes</groupId>
-                 <artifactId>protobuf-maven-plugin</artifactId>
-                 <executions>
-                     <execution>
-                         <goals>
-                             <goal>generate</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>
+            <plugin>
+                <groupId>io.github.ascopes</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
