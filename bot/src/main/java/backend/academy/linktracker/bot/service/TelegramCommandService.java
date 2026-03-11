@@ -2,6 +2,7 @@ package backend.academy.linktracker.bot.service;
 
 import backend.academy.linktracker.bot.command.Command;
 import backend.academy.linktracker.bot.command.CommandRegistry;
+import backend.academy.linktracker.bot.model.UserSession;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -17,22 +18,30 @@ public class TelegramCommandService {
 
     @Getter
     private final CommandRegistry commandRegistry;
+
     private final TelegramBot telegramBot;
+    private final UserSessionService sessionService;
 
     public void handleUpdate(Update update) {
         if (update.message() == null || update.message().text() == null) return;
 
-        String text = update.message().text();
         Long chatId = update.message().chat().id();
-        String[] parts = text.split(" ", 2);
+        String text = update.message().text().trim();
+        String[] parts = text.split("\\s+", 2);
 
-        log.atDebug()
-                .addKeyValue("updateId", update.updateId())
-                .addKeyValue("chatId", chatId)
-                .addKeyValue("text", text)
-                .log("Received Telegram update");
+        UserSession session = sessionService.getSession(chatId);
 
-        Command command = commandRegistry.getCommand(parts[0]);
+        Command command;
+
+        if (commandRegistry.hasCommand(parts[0])) {
+            sessionService.resetAll(chatId);
+            command = commandRegistry.getCommand(parts[0]);
+        } else if (session.getCurrentCommand() != null) {
+            command = commandRegistry.getCommand(session.getCurrentCommand());
+        } else {
+            command = commandRegistry.getCommand(parts[0]);
+        }
+
         String response = command.execute(chatId, parts);
 
         telegramBot.execute(new SendMessage(chatId.toString(), response));
