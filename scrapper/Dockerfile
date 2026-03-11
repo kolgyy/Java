@@ -1,10 +1,10 @@
-FROM openjdk:25-slim AS builder
+FROM eclipse-temurin:25-jdk-jammy AS builder
 WORKDIR /app
 COPY . .
-RUN ./gradlew :scrapper:bootJar
+RUN ./mvnw clean package -DskipTests
 
-FROM openjdk:25-slim
+FROM eclipse-temurin:25-jre-jammy
 WORKDIR /app
-COPY --from=builder /app/scrapper/build/libs/*.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]
