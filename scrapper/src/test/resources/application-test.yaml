@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+app:
+  communication:
+    client: http
+    server: http
+  scheduler:
+    delay: 5s
+  stackoverflow:
+    base-url: http://localhost:8090
+  github:
+    base-url: http://localhost:8089
+
+bot:
+  http:
+    base-url: http://bot:8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    backend.academy: DEBUG

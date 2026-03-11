@@ -1,6 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
 app:
+  communication:
+    client: http
+    server: http
   telegram:
-    url: ${wiremock.server.baseUrl}/bot
     token: test-token
     update-listener-sleep: 1s
     debug: true
+
+bot:
+  messages:
+    link-updated: "Получено обновление!\n\nСсылка: %s\nОписание: %s"
+  commands:
+    track:
+      invalid-link-message: "Некорректная ссылка. Поддерживаются только GitHub и StackOverflow."
+      already-tracked-message: "Ссылка уже отслеживается."
+    list:
+      empty-message: "Вы пока не отслеживаете ни одной ссылки."
+
+scrapper:
+  http:
+    base-url: http://scrapper:8081
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    backend.academy: DEBUG
