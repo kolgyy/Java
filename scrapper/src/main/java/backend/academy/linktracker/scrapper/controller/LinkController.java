@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/links")
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "app.communication.server", havingValue = "grpc")
+@ConditionalOnProperty(name = "app.communication.server", havingValue = "http")
 public class LinkController {
 
     private final LinkService linkService;
