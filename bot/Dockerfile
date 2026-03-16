@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jre-jammy
+FROM eclipse-temurin:25-jdk-alpine
 
 WORKDIR /app
 
