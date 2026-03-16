@@ -3,9 +3,10 @@ image: "${GITLAB_DOCKER_PROXY}/eclipse-temurin:25-jdk-alpine"
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   GITLAB_DOCKER_PROXY: "gitlab.education.tbank.ru:443/backend-academy-java-2025/lecture-materials/dependency_proxy/containers"
-  # BuildKit отключен
   DOCKER_BUILDKIT: "0"
   COMPOSE_DOCKER_CLI_BUILD: "0"
+  TESTCONTAINERS_RYUK_DISABLED: "false" # Ryuk включён, контейнеры будут автоматически убраны после тестов
+  TESTCONTAINERS_STARTUP_TIMEOUT: "600" # 10 минут на старт контейнеров
 
 workflow:
   rules:
@@ -43,10 +44,10 @@ build:
     - apk add --no-cache gcompat docker-cli
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    # build jars
+    # Собираем jar
     - ./mvnw package -DskipTests=true -Djacoco.skip=true
 
-    # build docker images (BuildKit отключен)
+    # Собираем оба образа
     - docker build -t link-tracker/bot:latest -f bot/Dockerfile .
     - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile .
 
@@ -71,7 +72,14 @@ integration-tests:
   stage: test
   needs:
     - build
+  services:
+    - name: docker:29.0.1-dind
+      alias: docker
   variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "${DOCKER_TLS_CERTDIR}/client"
     TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX: "${GITLAB_DOCKER_PROXY}/"
   tags:
     - dind
@@ -79,4 +87,5 @@ integration-tests:
     - apk add --no-cache gcompat docker-cli
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
+    # Просто запускаем тесты — Testcontainers сам создаст и свяжет оба контейнера
     - ./mvnw verify -Dtestcontainers.startup.timeout=600
