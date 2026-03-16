@@ -71,14 +71,7 @@ integration-tests:
   stage: test
   needs:
     - build
-  services:
-    - name: docker:29.0.1-dind
-      alias: docker
   variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "${DOCKER_TLS_CERTDIR}/client"
     TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX: "${GITLAB_DOCKER_PROXY}/"
   tags:
     - dind
@@ -86,4 +79,4 @@ integration-tests:
     - apk add --no-cache gcompat docker-cli
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
   script:
-    - ./mvnw verify
+    - ./mvnw verify -Dtestcontainers.startup.timeout=600
