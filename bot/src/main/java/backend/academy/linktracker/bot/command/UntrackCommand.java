@@ -51,7 +51,7 @@ public class UntrackCommand implements UserCommand {
     }
 
     private boolean isCancel(String text) {
-        return text != null && text.equalsIgnoreCase(properties.untrack().cancelCommand());
+        return text != null && text.trim().equalsIgnoreCase(properties.untrack().cancelCommand());
     }
 
     private String startUntrack(UserSession session) {

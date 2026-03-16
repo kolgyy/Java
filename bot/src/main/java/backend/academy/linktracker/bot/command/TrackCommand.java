@@ -58,7 +58,7 @@ public class TrackCommand implements UserCommand {
     }
 
     private boolean isCancel(String text) {
-        return text != null && text.equalsIgnoreCase(properties.track().cancelCommand());
+        return text != null && text.trim().equalsIgnoreCase(properties.track().cancelCommand());
     }
 
     private String startTracking(UserSession session) {
@@ -78,11 +78,14 @@ public class TrackCommand implements UserCommand {
         if (!isValidTrackableLink(text)) {
             return properties.track().invalidLinkMessage();
         }
+
+        // Проверяем сразу: если ссылка уже есть — сообщаем и сбрасываем сессию
         if (linkAlreadyTracked(chatId, text)) {
             sessionService.resetState(chatId);
             return properties.track().alreadyTrackedMessage();
         }
 
+        // Если ссылка новая — сохраняем её в сессии и ждем теги
         session.setCurrentLink(text);
         session.setState(UserState.AWAITING_TAGS);
         sessionService.save(session);
