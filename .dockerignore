@@ -1,0 +1,11 @@
+.git
+.gitlab
+.gitignore
+
+target/*
+!bot/target/*.jar
+!scrapper/target/*.jar
+
+node_modules
+*.log
+*.tmp
