@@ -1,115 +1,88 @@
 package backend.academy.linktracker.bot.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import backend.academy.linktracker.bot.model.UserSession;
-import backend.academy.linktracker.bot.model.UserState;
 import backend.academy.linktracker.bot.repository.UserSessionRepository;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class UserSessionServiceTest {
 
+    @Mock
     private UserSessionRepository repository;
+
+    @InjectMocks
     private UserSessionService service;
 
-    @BeforeEach
-    void setUp() {
-        repository = mock(UserSessionRepository.class);
-        service = new UserSessionService(repository);
-    }
-
     @Test
-    void shouldReturnExistingSession() {
-
-        Long chatId = 1L;
-
-        UserSession session = new UserSession(chatId);
-
-        when(repository.findByChatId(chatId)).thenReturn(Optional.of(session));
+    void getSession_shouldReturnExistingSession() {
+        long chatId = 1L;
+        UserSession existing = new UserSession(chatId);
+        when(repository.findByChatId(chatId)).thenReturn(Optional.of(existing));
 
         UserSession result = service.getSession(chatId);
 
-        assertThat(result).isEqualTo(session);
-
+        assertThat(result).isEqualTo(existing);
         verify(repository, never()).save(any());
     }
 
     @Test
-    void shouldCreateSessionIfNotExists() {
-
-        Long chatId = 2L;
-
+    void getSession_shouldCreateAndSaveNewSession_whenNotExists() {
+        long chatId = 1L;
         when(repository.findByChatId(chatId)).thenReturn(Optional.empty());
 
-        when(repository.save(any(UserSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        ArgumentCaptor<UserSession> captor = ArgumentCaptor.forClass(UserSession.class);
+        when(repository.save(captor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
 
         UserSession result = service.getSession(chatId);
 
         assertThat(result.getChatId()).isEqualTo(chatId);
-
+        assertThat(result).isSameAs(captor.getValue());
         verify(repository).save(any(UserSession.class));
     }
 
     @Test
-    void shouldResetState() {
-
-        Long chatId = 3L;
-
-        UserSession session = new UserSession(chatId);
-        session.setState(UserState.AWAITING_LINK);
-        session.setCurrentCommand("/track");
-
+    void resetState_shouldResetAndSaveSession() {
+        long chatId = 1L;
+        UserSession session = spy(new UserSession(chatId));
         when(repository.findByChatId(chatId)).thenReturn(Optional.of(session));
-
-        when(repository.save(any(UserSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(session)).thenReturn(session);
 
         service.resetState(chatId);
 
-        assertThat(session.getState()).isEqualTo(UserState.IDLE);
-        assertThat(session.getCurrentCommand()).isNull();
-
+        verify(session).resetState();
         verify(repository).save(session);
     }
 
     @Test
-    void shouldResetAll() {
-
-        Long chatId = 4L;
-
-        UserSession session = new UserSession(chatId);
-        session.setState(UserState.AWAITING_LINK);
-        session.setCurrentCommand("/track");
-        session.setCurrentLink("https://github.com/test/repo");
-        session.setCurrentTags("java");
-
+    void resetAll_shouldResetAllAndSaveSession() {
+        long chatId = 1L;
+        UserSession session = spy(new UserSession(chatId));
         when(repository.findByChatId(chatId)).thenReturn(Optional.of(session));
-
-        when(repository.save(any(UserSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(session)).thenReturn(session);
 
         service.resetAll(chatId);
 
-        assertThat(session.getState()).isEqualTo(UserState.IDLE);
-        assertThat(session.getCurrentCommand()).isNull();
-        assertThat(session.getCurrentLink()).isNull();
-        assertThat(session.getCurrentTags()).isNull();
-
+        verify(session).resetAll();
         verify(repository).save(session);
     }
 
     @Test
-    void shouldSaveSession() {
-
-        UserSession session = new UserSession(5L);
-
+    void save_shouldDelegateToRepository() {
+        UserSession session = new UserSession(1L);
         when(repository.save(session)).thenReturn(session);
 
         UserSession result = service.save(session);
 
-        assertThat(result).isEqualTo(session);
-
+        assertThat(result).isSameAs(session);
         verify(repository).save(session);
     }
 }

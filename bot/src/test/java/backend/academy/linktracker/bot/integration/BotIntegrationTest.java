@@ -8,32 +8,32 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BotIntegrationTest {
 
+    @SuppressWarnings("resource")
     @Container
     private static final GenericContainer<?> botContainer = new GenericContainer<>(
                     DockerImageName.parse("link-tracker/bot:latest"))
             .withEnv("SERVER_PORT", "8080")
+            .withEnv("SPRING_PROFILES_ACTIVE", "test")
             .withEnv("COMMUNICATION_PROTOCOL", "http")
             .withEnv("TELEGRAM_TOKEN", "test-token")
-            .withExposedPorts(8080);
-
-    @LocalServerPort
-    private int port;
+            .withExposedPorts(8080)
+            .waitingFor(Wait.forHttp("/actuator/health").forPort(8080));
 
     private RestTemplate restTemplate;
-    private String botUrl;
     private ObjectMapper objectMapper;
+    private String botUrl;
 
     @BeforeEach
     void setUp() {
@@ -46,96 +46,69 @@ public class BotIntegrationTest {
 
     @Test
     void testValidUpdateRequestReturns200() throws Exception {
-        // Arrange
-        LinkUpdate update =
-                new LinkUpdate(1L, "https://github.com/test/repo", "Test update description", List.of(123L, 456L));
+        LinkUpdate update = new LinkUpdate(1L, "https://github.com/test/repo", "Test update", List.of(123L));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(update), headers);
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(objectMapper.writeValueAsString(update), headers);
-
-        // Act
         ResponseEntity<String> response =
-                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, requestEntity, String.class);
+                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, request, String.class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     void testInvalidUpdateRequestReturns400() {
-        // Arrange
-        String invalidUpdate = """
-            {
-                "invalidField": "value"
-            }
-            """;
+        String invalidJson = "{\"invalidField\": \"value\"}";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(invalidJson, headers);
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(invalidUpdate, headers);
-
-        // Act
         ResponseEntity<String> response =
-                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, requestEntity, String.class);
+                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, request, String.class);
 
-        // Assert
-        assertThat(response.getStatusCode()).isNotEqualTo(HttpStatus.OK);
         assertThat(response.getStatusCode().is4xxClientError()).isTrue();
     }
 
     @Test
     void testEmptyBodyReturns400() {
-        // Arrange
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-
-        // Act
         ResponseEntity<String> response =
-                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, requestEntity, String.class);
+                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, request, String.class);
 
-        // Assert
         assertThat(response.getStatusCode().is4xxClientError()).isTrue();
     }
 
     @Test
-    void testWrongContentTypeReturns415() {
-        // Arrange
-        LinkUpdate update =
-                new LinkUpdate(1L, "https://github.com/test/repo", "Test update description", List.of(123L, 456L));
+    void testWrongContentTypeReturns415() throws Exception {
+        LinkUpdate update = new LinkUpdate(1L, "https://github.com/test/repo", "Test update", List.of(123L));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<LinkUpdate> request = new HttpEntity<>(update, headers);
 
-        HttpEntity<LinkUpdate> requestEntity = new HttpEntity<>(update, headers);
-
-        // Act
         ResponseEntity<String> response =
-                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, requestEntity, String.class);
+                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, request, String.class);
 
-        // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
     @Test
     void testMalformedJsonReturns400() {
-        // Arrange
         String malformedJson = "{this is not valid json}";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(malformedJson, headers);
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(malformedJson, headers);
-
-        // Act
         ResponseEntity<String> response =
-                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, requestEntity, String.class);
+                restTemplate.exchange(botUrl + "/updates", HttpMethod.POST, request, String.class);
 
-        // Assert
         assertThat(response.getStatusCode().is4xxClientError()).isTrue();
     }
 }
