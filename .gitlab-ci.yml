@@ -50,11 +50,6 @@ build:
     - docker build -t link-tracker/bot:latest -f bot/Dockerfile .
     - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile .
 
-  artifacts:
-    paths:
-      - bot/target/*.jar
-      - scrapper/target/*.jar
-
 # ---------------- LINT ----------------
 lint:
   stage: lint
