@@ -7,11 +7,13 @@ spring:
   grpc:
     server:
       port: 9091
+  config:
+    import: optional:file:.env[.properties]
 
 app:
   communication:
-    server: ${COMMUNICATION_PROTOCOL}
-    client: ${COMMUNICATION_PROTOCOL}
+    server: ${COMMUNICATION_PROTOCOL:grpc}
+    client: ${COMMUNICATION_PROTOCOL:grpc}
   scheduler:
     delay: 60s
   stackoverflow:

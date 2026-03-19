@@ -8,11 +8,13 @@ spring:
   grpc:
     server:
       port: 9090
+  config:
+    import: optional:file:.env[.properties]
 
 app:
   communication:
-    client: ${COMMUNICATION_PROTOCOL}
-    server: ${COMMUNICATION_PROTOCOL}
+    client: ${COMMUNICATION_PROTOCOL:grpc}
+    server: ${COMMUNICATION_PROTOCOL:grpc}
   telegram:
     url: https://api.telegram.org/bot
     token: ${TELEGRAM_TOKEN} # Use env variable. DO NOT KEEP TOKEN HERE
