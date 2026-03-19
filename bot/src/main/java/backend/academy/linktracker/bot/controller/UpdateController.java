@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/updates")
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "app.communication.server", havingValue = "http")
+@ConditionalOnProperty(name = "app.communication.server", havingValue = "http", matchIfMissing = true)
 @Slf4j
 public class UpdateController {
 
