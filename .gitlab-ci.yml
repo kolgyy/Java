@@ -30,19 +30,6 @@ before_script:
 
 build:
   stage: build
-  script:
-    - ./mvnw package -DskipTests=true -Djacoco.skip=true
-lint:
-  stage: lint
-  needs:
-    - build
-  script:
-    - ./mvnw compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
-
-test:
-  stage: test
-  needs:
-    - build
   services:
     - name: docker:29.0.1-dind
       alias: docker
@@ -54,6 +41,32 @@ test:
   tags:
     - dind
   script:
+    - ./mvnw clean package -DskipTests=true -Djacoco.skip=true
     - docker build -t link-tracker/bot:latest -f bot/Dockerfile .
     - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile .
+
+lint:
+  stage: lint
+  needs:
+    - build
+  script:
+    - ./mvnw compile -am spotless:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
+
+tests:
+  stage: test
+  needs:
+    - build
+  services:
+    - name: docker:29.0.1-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "${DOCKER_TLS_CERTDIR}/client"
+    TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX: "link-tracker/"
+    TESTCONTAINERS_PULL_POLICY: "never"
+  tags:
+    - dind
+  script:
     - ./mvnw verify -Dtestcontainers.startup.timeout=600
