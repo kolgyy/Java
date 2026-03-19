@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/tg-chat")
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "app.communication.server", havingValue = "http")
+@ConditionalOnProperty(name = "app.communication.server", havingValue = "http", matchIfMissing = true)
 public class TgChatController {
 
     private final TgChatService service;

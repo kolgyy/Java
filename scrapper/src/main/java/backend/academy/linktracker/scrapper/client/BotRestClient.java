@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
-@ConditionalOnProperty(name = "app.communication.client", havingValue = "http")
+@ConditionalOnProperty(name = "app.communication.client", havingValue = "http", matchIfMissing = true)
 public class BotRestClient implements BotClient {
 
     private final RestClient restClient;
