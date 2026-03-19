@@ -9,24 +9,35 @@ app:
   communication:
     client: http
     server: http
+
   telegram:
     token: test-token
     update-listener-sleep: 1s
     debug: true
+    base-url: http://wiremock:8080
+    enabled: false
 
 bot:
   messages:
     link-updated: "Получено обновление!\n\nСсылка: %s\nОписание: %s"
+
   commands:
     track:
       invalid-link-message: "Некорректная ссылка. Поддерживаются только GitHub и StackOverflow."
       already-tracked-message: "Ссылка уже отслеживается."
+
     list:
       empty-message: "Вы пока не отслеживаете ни одной ссылки."
 
 scrapper:
   http:
     base-url: http://scrapper:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 logging:
   level:
