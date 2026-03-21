@@ -47,6 +47,7 @@ public class BotIntegrationTest {
     @AfterAll
     static void tearDown() {
         botContainer.stop();
+        NETWORK.close();
     }
 
     // 1. Корректный запрос -> 200 OK

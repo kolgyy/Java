@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,15 @@ public class BotScrapperE2ETest {
 
         WireMock.configureFor(stackoverflowContainer.getHost(), stackoverflowContainer.getMappedPort(8080));
         WireMock.reset();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        botContainer.stop();
+        scrapperContainer.stop();
+        stackoverflowContainer.stop();
+        githubContainer.stop();
+        NETWORK.close();
     }
 
     @Test

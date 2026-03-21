@@ -1,6 +1,8 @@
 package backend.academy.linktracker.scrapper.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -11,9 +13,16 @@ import backend.academy.linktracker.scrapper.dto.response.ListLinksResponse;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.time.Duration;
 import java.util.List;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.GenericContainer;
@@ -56,6 +65,13 @@ public class ScrapperIntegrationTest {
     private RestTemplate restTemplate;
     private String baseUrl;
 
+    @BeforeAll
+    public static void startContainers() {
+        githubContainer.start();
+        stackoverflowContainer.start();
+        scrapperContainer.start();
+    }
+
     @BeforeEach
     void setUp() {
         restTemplate = new RestTemplate();
@@ -75,6 +91,14 @@ public class ScrapperIntegrationTest {
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"items\":[{\"last_activity_date\":1700000000}]}")));
+    }
+
+    @AfterAll
+    static void tearDown() {
+        scrapperContainer.stop();
+        stackoverflowContainer.stop();
+        githubContainer.stop();
+        NETWORK.close();
     }
 
     @Test
