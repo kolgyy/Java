@@ -47,7 +47,7 @@ build:
     # Сборка локальных образов для Testcontainers
     - docker build -t link-tracker/bot:latest -f bot/Dockerfile .
     - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile .
-    - docker pull wiremock/wiremock:3.5.2 || true
+    - docker pull gitlab.education.tbank.ru:443/backend-academy-java-2025/lecture-materials/dependency_proxy/containers/wiremock/wiremock:3.5.2 || true
 
 lint:
   stage: lint
