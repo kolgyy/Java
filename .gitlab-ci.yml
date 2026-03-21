@@ -3,6 +3,8 @@ image: "${GITLAB_DOCKER_PROXY}/eclipse-temurin:25-jdk-alpine"
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   GITLAB_DOCKER_PROXY: "gitlab.education.tbank.ru:443/backend-academy-java-2025/lecture-materials/dependency_proxy/containers"
+  DOCKER_BUILDKIT: "0"
+  COMPOSE_DOCKER_CLI_BUILD: "0"
   TESTCONTAINERS_RYUK_DISABLED: "false"
   TESTCONTAINERS_STARTUP_TIMEOUT: "600"
   TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX: "link-tracker/"
@@ -41,7 +43,8 @@ build:
   tags:
     - dind
   script:
-    - ./mvnw clean package -DskipTests=true -Djacoco.skip=true
+    - ./mvnw package -DskipTests=true -Djacoco.skip=true
+    # Сборка локальных образов для Testcontainers
     - docker build -t link-tracker/bot:latest -f bot/Dockerfile .
     - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile .
 
