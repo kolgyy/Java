@@ -55,7 +55,7 @@ test:
     - apk add --no-cache gcompat docker-cli
     - echo "$CI_JOB_TOKEN" | docker login gitlab.education.tbank.ru:443 -u gitlab-ci-token --password-stdin
     - ./mvnw package -DskipTests=true -Djacoco.skip=true
-    - docker build -t link-tracker/bot:latest -f bot/Dockerfile ./bot
-    - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile ./scrapper
+    - docker build -t link-tracker/bot:latest -f bot/Dockerfile
+    - docker build -t link-tracker/scrapper:latest -f scrapper/Dockerfile
   script:
     - ./mvnw clean package -DskipTests && ./mvnw verify -am
