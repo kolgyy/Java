@@ -2,7 +2,7 @@ FROM eclipse-temurin:25-jdk-alpine
 
 WORKDIR /app
 
-COPY scrapper/target/*.jar app.jar
+COPY target/*.jar app.jar
 
 EXPOSE 8081
 
