@@ -55,6 +55,7 @@ public class BotScrapperE2ETest {
 
     private static final GenericContainer<?> scrapperContainer = new GenericContainer<>(
                     DockerImageName.parse("link-tracker/scrapper:latest"))
+            .withImagePullPolicy(_ -> false)
             .withNetwork(NETWORK)
             .withNetworkAliases("scrapper")
             .dependsOn(githubContainer, stackoverflowContainer)
@@ -72,6 +73,7 @@ public class BotScrapperE2ETest {
 
     private static final GenericContainer<?> botContainer = new GenericContainer<>(
                     DockerImageName.parse("link-tracker/bot:latest"))
+            .withImagePullPolicy(_ -> false)
             .withNetwork(NETWORK)
             .withNetworkAliases("bot")
             .withEnv("SPRING_PROFILES_ACTIVE", "test")

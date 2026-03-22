@@ -31,6 +31,7 @@ public class BotIntegrationTest {
 
     private static final GenericContainer<?> botContainer = new GenericContainer<>(
                     DockerImageName.parse("link-tracker/bot:latest"))
+            .withImagePullPolicy(_ -> false)
             .withNetwork(NETWORK)
             .withNetworkAliases("bot")
             .withEnv("SPRING_PROFILES_ACTIVE", "test")

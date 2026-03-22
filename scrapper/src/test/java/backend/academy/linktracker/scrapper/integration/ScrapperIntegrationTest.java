@@ -54,6 +54,7 @@ public class ScrapperIntegrationTest {
     @Container
     private static final GenericContainer<?> scrapperContainer = new GenericContainer<>(
                     DockerImageName.parse("link-tracker/scrapper:latest"))
+            .withImagePullPolicy(_ -> false)
             .withNetwork(NETWORK)
             .withNetworkAliases("scrapper")
             .dependsOn(githubContainer, stackoverflowContainer)
