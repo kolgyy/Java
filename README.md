@@ -27,7 +27,9 @@ LinkTracker – Telegram-бот, который отслеживает изме�
 
 ```bash
 SPRING_PROFILES_ACTIVE=dev TELEGRAM_TOKEN=your_real_token GITHUB_TOKEN=your_real_token STACKOVERFLOW_ACCESS_KEY=your_real_token STACKOVERFLOW_KEY=your_real_token COMMUNICATION PROTOCOL=http/grpc ./mvnw spring-boot:run -pl bot
-
+Возможно, будет необходимо настроить сеть:
+Maven:
+**-Dspring-boot.run.jvmArguments="-DsocksProxyHost=your_host -DsocksProxyPort=your_port"**
 **Или запустите основной класс с @SpringBootApplication через IDE, указав .env-файл с переменными токена и профиля.**
 
 ## Project Build
