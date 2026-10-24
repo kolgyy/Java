@@ -1,0 +1,61 @@
+server:
+  port: ${SERVER_PORT:8081}
+  shutdown: graceful
+
+spring:
+  autoconfigure:
+    # Пользователи приходят из JWT, встроенный in-memory пользователь не нужен
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${AUTH_DB_NAME:bibank_auth}
+    username: ${AUTH_DB_USER:bibank_auth}
+    password: ${AUTH_DB_PASSWORD:bibank_auth}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+
+jwt:
+  access-token-ttl: ${JWT_ACCESS_TOKEN_TTL:900s}
+  refresh-token-ttl: ${JWT_REFRESH_TOKEN_TTL:7d}
+
+bibank:
+  security:
+    jwt-secret: ${JWT_SECRET}
+    internal-token: ${INTERNAL_API_TOKEN}
+  outbox:
+    enabled: true
+  admin:
+    email: ${BIBANK_ADMIN_EMAIL:}
+    password: ${BIBANK_ADMIN_PASSWORD:}
+    full-name: ${BIBANK_ADMIN_NAME:Администратор BiBank}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false

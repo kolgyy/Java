@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-users-table.sql
+
+  - include:
+      file: db/changelog/002-add-role-column.sql
+
+  - include:
+      file: db/changelog/003-create-refresh-tokens-table.sql
+
+  - include:
+      file: db/changelog/004-extend-users.sql
+
+  - include:
+      file: db/changelog/common/outbox.sql
