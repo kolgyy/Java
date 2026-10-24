@@ -1,0 +1,17 @@
+# Внешний вход: всё через frontend (nginx сам проксирует /api на gateway).
+# Требуется ingress-controller (например, ingress-nginx). Добавьте в /etc/hosts: <IP кластера> bibank.local
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bibank
+  namespace: bibank
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bibank.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: frontend, port: { number: 80 } }

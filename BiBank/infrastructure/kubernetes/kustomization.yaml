@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bibank
+# Secret не входит в список: создайте его отдельно (см. secret.example.yaml)
+resources:
+  - 00-namespace.yaml
+  - 01-config.yaml
+  - 10-postgres-init.yaml
+  - 10-postgres.yaml
+  - 11-redis.yaml
+  - 12-kafka.yaml
+  - 20-auth-service.yaml
+  - 20-account-service.yaml
+  - 20-payment-service.yaml
+  - 20-loan-service.yaml
+  - 20-notification-service.yaml
+  - 30-api-gateway.yaml
+  - 31-frontend.yaml
+  - 40-ingress.yaml

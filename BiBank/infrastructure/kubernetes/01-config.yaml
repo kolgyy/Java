@@ -1,0 +1,18 @@
+# Несекретные настройки, общие для всех сервисов
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bibank-config
+  namespace: bibank
+data:
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  ACCOUNT_SERVICE_URL: http://account-service:8082
+  PAYMENT_SERVICE_URL: http://payment-service:8083
+  JWT_ACCESS_TOKEN_TTL: 900s
+  JWT_REFRESH_TOKEN_TTL: 7d
+  LIQUIBASE_ANALYTICS_ENABLED: "false"
+  JAVA_OPTS: -XX:MaxRAMPercentage=75 -XX:+UseSerialGC
