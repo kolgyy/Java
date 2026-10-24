@@ -1,0 +1,49 @@
+server:
+  port: ${SERVER_PORT:8082}
+  shutdown: graceful
+
+spring:
+  autoconfigure:
+    # Пользователи приходят из JWT, встроенный in-memory пользователь не нужен
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: account-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${ACCOUNT_DB_NAME:bibank_accounts}
+    username: ${ACCOUNT_DB_USER:bibank_accounts}
+    password: ${ACCOUNT_DB_PASSWORD:bibank_accounts}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+
+bibank:
+  security:
+    jwt-secret: ${JWT_SECRET}
+    internal-token: ${INTERNAL_API_TOKEN}
+  outbox:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
