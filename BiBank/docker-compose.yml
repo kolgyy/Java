@@ -248,6 +248,16 @@ services:
       loan-service: { condition: service_healthy }
       notification-service: { condition: service_healthy }
 
+  frontend:
+    build:
+      context: ./frontend
+    image: bibank/frontend:latest
+    container_name: bibank-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      api-gateway: { condition: service_healthy }
 
 volumes:
   postgres_data:
