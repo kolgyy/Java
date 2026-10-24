@@ -1,0 +1,255 @@
+# BiBank — полное локальное окружение.
+# Запуск:  docker compose up --build
+# Фронтенд: http://localhost:4200   API Gateway: http://localhost:8080   Swagger: http://localhost:8080/swagger-ui.html
+# Значения по умолчанию предназначены только для локальной разработки; переопределяются в .env.
+
+name: bibank
+
+x-backend-env: &backend-env
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: 5432
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  JWT_SECRET: ${JWT_SECRET:-local-dev-only-jwt-secret-change-me-0123456789}
+  INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-local-dev-only-internal-token-change-me}
+  ACCOUNT_SERVICE_URL: http://account-service:8082
+  PAYMENT_SERVICE_URL: http://payment-service:8083
+  # Liquibase по умолчанию отправляет анонимную статистику — отключаем
+  LIQUIBASE_ANALYTICS_ENABLED: "false"
+  JAVA_OPTS: -XX:MaxRAMPercentage=75 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss512k
+
+x-backend: &backend
+  restart: unless-stopped
+  mem_limit: 640m
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:$${SERVER_PORT}/actuator/health/readiness | grep -q UP"]
+    interval: 10s
+    timeout: 5s
+    retries: 30
+    start_period: 40s
+
+x-build: &build
+  context: .
+  dockerfile: infrastructure/docker/backend.Dockerfile
+
+services:
+
+  # ========================= ИНФРАСТРУКТУРА =========================
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bibank-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:-postgres}
+      POSTGRES_DB: postgres
+      AUTH_DB_USER: ${AUTH_DB_USER:-bibank_auth}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:-bibank_auth}
+      ACCOUNT_DB_USER: ${ACCOUNT_DB_USER:-bibank_accounts}
+      ACCOUNT_DB_PASSWORD: ${ACCOUNT_DB_PASSWORD:-bibank_accounts}
+      PAYMENT_DB_USER: ${PAYMENT_DB_USER:-bibank_payments}
+      PAYMENT_DB_PASSWORD: ${PAYMENT_DB_PASSWORD:-bibank_payments}
+      LOAN_DB_USER: ${LOAN_DB_USER:-bibank_loans}
+      LOAN_DB_PASSWORD: ${LOAN_DB_PASSWORD:-bibank_loans}
+      NOTIFICATION_DB_USER: ${NOTIFICATION_DB_USER:-bibank_notifications}
+      NOTIFICATION_DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD:-bibank_notifications}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/docker/postgres/init-databases.sh:/docker-entrypoint-initdb.d/01-init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: bibank-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "volatile-lru"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  kafka:
+    image: apache/kafka:3.9.1
+    container_name: bibank-kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,HOST://:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_HEAP_OPTS: -Xmx512m -Xms256m
+    ports:
+      - "29092:29092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: bibank-kafka-ui
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "${KAFKA_UI_PORT:-8090}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: bibank
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    profiles: ["tools"]
+
+  # ========================= СЕРВИСЫ =========================
+
+  auth-service:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: auth-service
+    image: bibank/auth-service:latest
+    container_name: bibank-auth-service
+    environment:
+      <<: *backend-env
+      SERVER_PORT: 8081
+      AUTH_DB_USER: ${AUTH_DB_USER:-bibank_auth}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:-bibank_auth}
+      JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-900s}
+      JWT_REFRESH_TOKEN_TTL: ${JWT_REFRESH_TOKEN_TTL:-7d}
+      BIBANK_ADMIN_EMAIL: ${BIBANK_ADMIN_EMAIL:-admin@bibank.local}
+      BIBANK_ADMIN_PASSWORD: ${BIBANK_ADMIN_PASSWORD:-Admin12345}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  account-service:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: account-service
+    image: bibank/account-service:latest
+    container_name: bibank-account-service
+    environment:
+      <<: *backend-env
+      SERVER_PORT: 8082
+      ACCOUNT_DB_USER: ${ACCOUNT_DB_USER:-bibank_accounts}
+      ACCOUNT_DB_PASSWORD: ${ACCOUNT_DB_PASSWORD:-bibank_accounts}
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  payment-service:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: payment-service
+    image: bibank/payment-service:latest
+    container_name: bibank-payment-service
+    environment:
+      <<: *backend-env
+      SERVER_PORT: 8083
+      PAYMENT_DB_USER: ${PAYMENT_DB_USER:-bibank_payments}
+      PAYMENT_DB_PASSWORD: ${PAYMENT_DB_PASSWORD:-bibank_payments}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      account-service: { condition: service_healthy }
+
+  loan-service:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: loan-service
+    image: bibank/loan-service:latest
+    container_name: bibank-loan-service
+    environment:
+      <<: *backend-env
+      SERVER_PORT: 8084
+      LOAN_DB_USER: ${LOAN_DB_USER:-bibank_loans}
+      LOAN_DB_PASSWORD: ${LOAN_DB_PASSWORD:-bibank_loans}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      payment-service: { condition: service_healthy }
+
+  notification-service:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: notification-service
+    image: bibank/notification-service:latest
+    container_name: bibank-notification-service
+    environment:
+      <<: *backend-env
+      SERVER_PORT: 8085
+      NOTIFICATION_DB_USER: ${NOTIFICATION_DB_USER:-bibank_notifications}
+      NOTIFICATION_DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD:-bibank_notifications}
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  api-gateway:
+    <<: *backend
+    build:
+      <<: *build
+      args:
+        SERVICE: api-gateway
+    image: bibank/api-gateway:latest
+    container_name: bibank-api-gateway
+    environment:
+      SERVER_PORT: 8080
+      REDIS_HOST: redis
+      JWT_SECRET: ${JWT_SECRET:-local-dev-only-jwt-secret-change-me-0123456789}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost}
+      AUTH_SERVICE_URL: http://auth-service:8081
+      ACCOUNT_SERVICE_URL: http://account-service:8082
+      PAYMENT_SERVICE_URL: http://payment-service:8083
+      LOAN_SERVICE_URL: http://loan-service:8084
+      NOTIFICATION_SERVICE_URL: http://notification-service:8085
+      JAVA_OPTS: -XX:MaxRAMPercentage=75 -XX:+UseSerialGC -XX:TieredStopAtLevel=1
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    depends_on:
+      redis: { condition: service_healthy }
+      auth-service: { condition: service_healthy }
+      account-service: { condition: service_healthy }
+      payment-service: { condition: service_healthy }
+      loan-service: { condition: service_healthy }
+      notification-service: { condition: service_healthy }
+
+
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
