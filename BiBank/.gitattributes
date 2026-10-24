@@ -1,0 +1,5 @@
+# Скрипты должны иметь LF-окончания даже при checkout на Windows
+*.sh text eol=lf
+*.java text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
