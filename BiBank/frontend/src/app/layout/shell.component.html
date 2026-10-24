@@ -1,0 +1,68 @@
+<div class="shell" [class.shell--open]="menuOpen()">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/dashboard">
+      <span class="brand__logo">Bi</span>
+      <span class="brand__name">BiBank</span>
+    </a>
+
+    <nav class="nav">
+      @for (item of nav; track item.path) {
+        <a class="nav__item" [routerLink]="item.path" routerLinkActive="active">
+          <app-icon [name]="item.icon" />
+          <span>{{ item.label }}</span>
+          @if (item.path === '/notifications' && notifications.unread() > 0) {
+            <span class="nav__count">{{ notifications.unread() > 99 ? '99+' : notifications.unread() }}</span>
+          }
+        </a>
+      }
+      @if (auth.isAdmin()) {
+        <div class="nav__section">Управление</div>
+        <a class="nav__item" routerLink="/admin" routerLinkActive="active">
+          <app-icon name="shield" />
+          <span>Администрирование</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <div class="demo-note">
+        <app-icon name="info" [size]="16" />
+        <span>Учебный банк: все средства виртуальные</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="backdrop" (click)="menuOpen.set(false)"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn topbar__menu" (click)="menuOpen.set(!menuOpen())" aria-label="Меню">
+        <app-icon name="menu" />
+      </button>
+      <div class="grow"></div>
+      <a class="btn btn--sm topbar__cta" routerLink="/transfer">
+        <app-icon name="send" [size]="16" /> Перевести
+      </a>
+      <a class="icon-btn" routerLink="/notifications" aria-label="Уведомления">
+        <app-icon name="bell" />
+        @if (notifications.unread() > 0) {
+          <span class="dot"></span>
+        }
+      </a>
+      <a class="user" routerLink="/profile">
+        <span class="avatar">{{ initials() }}</span>
+        <span class="user__info">
+          <span class="user__name">{{ auth.user()?.fullName }}</span>
+          <span class="user__role">{{ auth.isAdmin() ? 'Администратор' : 'Клиент' }}</span>
+        </span>
+      </a>
+      <button class="icon-btn" (click)="logout()" title="Выйти" aria-label="Выйти">
+        <app-icon name="logout" />
+      </button>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
